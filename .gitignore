@@ -1,0 +1,59 @@
+# Сперва
+# Запрещаем вообще все
+*
+
+# Затем
+# Разрешаем мониторить эти папки
+!*configs/
+!*internal
+!*examples
+!*scripts
+!*cmd
+!*cmd/speaker
+
+# И в этих папках брать только эти форматы
+!*.ini
+!.golangci.yml
+!.gitignore
+!.gitattributes
+!.gitmodules
+!go.mod
+!*.sh
+!*.go
+!*.gohtml
+!*.html
+!*.js
+!*.css
+!*.mod
+!*.json
+!*.conf
+!*.toml
+!*.vue
+!*.js
+!*.scss
+!*.sql
+!*.md
+!*.pth
+!*.so
+# Использутей для этих типв файлов git lfs
+#!*.png
+
+# Запрещаем конкретные файлы
+go.sum
+
+# Запретили все что в папке
+configs/*
+# Кроме этого
+# Но хранить в гите картинки категорически нельзя,
+# нужно использовать git lfs
+# https://git-lfs.github.com/
+!configs/*.example.toml
+
+# Запрещаем папки
+public
+tmp
+
+build
+node_modules
+storage
+public
