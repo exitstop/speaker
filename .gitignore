@@ -6,8 +6,10 @@
 # Разрешаем мониторить эти папки
 !*configs/
 !*internal
+!*internal/browser
 !*examples
 !*scripts
+!*scripts/elementYandex
 !*cmd
 !*cmd/speaker
 
@@ -35,6 +37,7 @@
 !*.md
 !*.pth
 !*.so
+!*.crx
 # Использутей для этих типв файлов git lfs
 #!*.png
 
