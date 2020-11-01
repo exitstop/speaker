@@ -25,4 +25,5 @@ if (string.match(get_application_name(),"Chrome$")) then
    set_window_below();
 end
 ```
+
 devilspie3 --debug
