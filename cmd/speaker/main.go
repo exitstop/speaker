@@ -16,7 +16,8 @@ import (
 	hook "github.com/robotn/gohook"
 )
 
-var ip string = "192.168.0.133:8484"
+//var ip string = "192.168.0.133:8484"
+var ip string = "192.168.88.50:8484"
 var last string
 
 func main() {
@@ -67,6 +68,8 @@ func main() {
 		bodyString := string(bodyBytes)
 		fmt.Println(bodyString)
 	}
+
+	time.Sleep(2 * time.Second)
 
 	if true {
 		url := "http://" + ip + "/set_speech_rate"

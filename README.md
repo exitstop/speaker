@@ -26,4 +26,4 @@ if (string.match(get_application_name(),"Chrome$")) then
 end
 ```
 
-devilspie3 --debug
+devilspie2 --debug
