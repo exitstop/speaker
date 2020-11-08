@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"encoding/json"
+	"flag"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -18,14 +19,23 @@ import (
 
 //var ip string = "192.168.0.133:8484"
 var ip string = "192.168.88.50:8484"
+var nFlagTransel bool
 var last string
 
 func main() {
-	browser.InitBrowser()
-	browser.SetBrowserLang1("en-US")
-	browser.SetBrowserLang2("ru-RU")
-	transl := browser.GetTranslate("hello world")
-	fmt.Println(transl)
+	var nFlag string
+	flag.StringVar(&nFlag, "ip", "192.168.0.133", "ip")
+	flag.BoolVar(&nFlagTransel, "tr", true, "translate")
+	flag.Parse()
+	ip = nFlag + ":8484"
+
+	if nFlagTransel {
+		browser.InitBrowser()
+		browser.SetBrowserLang1("en-US")
+		browser.SetBrowserLang2("ru-RU")
+		transl := browser.GetTranslate("hello world")
+		fmt.Println(transl)
+	}
 
 	clientLong := &http.Client{
 		Timeout: 4 * time.Second,
@@ -113,14 +123,23 @@ func add() {
 			fmt.Println(err)
 		}
 		fmt.Println(actual)
-		if last == actual || actual == "" || actual == " " {
+		if actual == "" || actual == " " {
 			return
 		}
 		last = actual
 
-		transl := browser.GetTranslate(actual)
+		var transl string
 
-		{
+		if nFlagTransel {
+			// hello world
+			transl = browser.GetTranslateGoogle(actual)
+		} else {
+			transl = actual
+		}
+
+		fmt.Println("transl:", transl, "h:", actual)
+
+		if transl != "0" {
 
 			bigText := RegexWork(transl)
 			url := "http://" + ip + "/play_on_android"

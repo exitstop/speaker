@@ -22,7 +22,7 @@ var allNamePageOpen []string
 var Lang1 string = "en-US"
 var Lang2 string = "ru-RU"
 
-const TIME_WAIT_MILLISECOND = 2000
+const TIME_WAIT_MILLISECOND = 5000
 const TIME_CYCLE = 50
 const COUNT_TRANSLATE_SITE = 0 // 0 == google // 1 == google, yandex// google, yandex, promt
 var Mu sync.Mutex
@@ -47,9 +47,9 @@ func InitBrowser() {
 	//crxBytes4, _ := ioutil.ReadFile("Clever-Mute_v0.5.1.crx")
 	//crxByte5, _ := ioutil.ReadFile("~/elementYandex/elementYandex.crx")
 
-	pathCrx := "scripts/elementYandex/elementYandex.crx"
-	crxByte5, _ := ioutil.ReadFile(pathCrx)
-	fmt.Println(pathCrx)
+	//pathCrx := "scripts/elementYandex/elementYandex.crx"
+	//crxByte5, _ := ioutil.ReadFile(pathCrx)
+	//fmt.Println(pathCrx)
 
 	// --user-data-dir
 	//"user-data-dir": "~/.config/google-chrome",
@@ -78,6 +78,7 @@ func InitBrowser() {
 	rand.Seed(time.Now().UnixNano())
 	randInt := rand.Intn(len(browserlist.BrowserList))
 	userAgent := browserlist.BrowserList[randInt]
+	userAgent = browserlist.BrowserList[0]
 	log.Println("userAgent = " + userAgent)
 
 	argsChrome := agouti.ChromeOptions("args", []string{strHeadless,
@@ -85,11 +86,14 @@ func InitBrowser() {
 		"--disable-gpu", "--no-sandbox", "--lang=en-US",
 		"user-agent='" + userAgent + "'",
 		"--enable-tab-audio-muting", "--mute-audio", "--no-default-browser-check", "--disable-setuid-sandbox",
-		"--detach=false", strProxy})
+		"--detach=false", strProxy},
+	)
+
 	//argsChrome2 := agouti.ChromeOptions("extensions", [][]byte{ crxBytes, crxBytes2, crxBytes4 })
-	argsChrome2 := agouti.ChromeOptions("extensions", [][]byte{crxByte5})
+	//argsChrome2 := agouti.ChromeOptions("extensions", [][]byte{crxByte5})
 	argsChrome3 := agouti.ChromeOptions(
 		"binary", "/usr/bin/google-chrome",
+		//"binary", "/usr/bin/chromium-browser",
 	)
 
 	// http://www.assertselenium.com/java/list-of-chrome-driver-command-line-arguments/
@@ -98,7 +102,8 @@ func InitBrowser() {
 
 	//driverTransl = agouti.ChromeDriver( agouti.Desired(capabilities), argsChrome )
 	if flagHeadless == false {
-		driverTransl = agouti.ChromeDriver(argsChrome, argsChrome2, argsChrome3)
+		//driverTransl = agouti.ChromeDriver(argsChrome, argsChrome2, argsChrome3)
+		driverTransl = agouti.ChromeDriver(argsChrome, argsChrome3)
 	} else {
 		driverTransl = agouti.ChromeDriver(argsChrome)
 	}
@@ -108,12 +113,12 @@ func InitBrowser() {
 		// https://chromedriver.chromium.org/downloads
 		// wget https://chromedriver.storage.googleapis.com/86.0.4240.22/chromedriver_linux64.zip
 		// sudo cp chromedriver /usr/local/bin/
-		log.Fatal("Failed to start driver:", err)
+		fmt.Println("Failed to start driver:", err)
 	}
 
 	page, err = driverTransl.NewPage()
 	if err != nil {
-		log.Fatal("Failed to open page:", err)
+		fmt.Println("Failed to open page:", err)
 	}
 
 	// Ограничим ожидание загрузки двумя секундами
@@ -154,7 +159,7 @@ func CreateNewPage(page *agouti.Page, name string, url string) {
 		allNamePageOpen = append(allNamePageOpen, name)
 		page.SwitchToWindow(name)
 		if err := page.Navigate(url); err != nil {
-			log.Fatal("Failed to navigate:", err)
+			fmt.Println("Failed to navigate:", err)
 		}
 	}
 }
@@ -183,11 +188,11 @@ window.MyGolobYandExep = 0;
 	window.postMessage({action: 'YandexExtension::Translate', payload: TEXT, from: LANG_FROM, to: LANG_TO }, '*');
 	`, map[string]interface{}{"TEXT": text, "LANG_FROM": localLang1, "LANG_TO": localLang2}, &value)
 	if err != nil {
-		log.Fatal("Google RunScript: ", err)
+		fmt.Println("0Google RunScript: ", err)
 	}
 	for i := 0; i < (TIME_WAIT_MILLISECOND/TIME_CYCLE)/3; i++ {
 		err = page.RunScript(`
-if(window.MyGolobYandExep == 1) {
+		if(window.MyGolobYandExep == 1) {
 			var retString = "" + window.GlobalText;
 			window.MyGolobYandExep = 0;
 			window.GlobalText ='0';
@@ -196,7 +201,7 @@ if(window.MyGolobYandExep == 1) {
 		return "0"
 		`, nil, &value)
 		if err != nil {
-			log.Fatal("Google3 RunScript: ", err)
+			fmt.Println("Google3 RunScript: ", err)
 			break
 		}
 		if value != "0" {
@@ -220,12 +225,26 @@ func GetTranslateGoogle(text string) string {
 		return ret
 	}
 
+	fmt.Println("text: ", text)
+
 	err = page.RunScript(`
-window.MyGolobalVar = 0;
-	document.querySelector("#source").value = TEXT
+	window.MyGolobalVar = 0;
+	var obj = document.querySelector("#source");
+	if (!obj) {
+		obj = document.querySelector("#yDmH0d > c-wiz > div > div.WFnNle > c-wiz > div.OlSOob > c-wiz > div.ccvoYb > div.AxqVh > div.OPPzxe > c-wiz.rm1UF.UnxENd > span > span > div > textarea");
+	}
+
+	obj.value = TEXT;
+
+	var event = new Event('input', {
+		'bubbles': true,
+		'cancelable': true
+	});
+	obj.dispatchEvent(event);
 	`, map[string]interface{}{"TEXT": text}, &value)
 	if err != nil {
-		log.Fatal("Google RunScript: ", err)
+		fmt.Println("1Google RunScript: ", err)
+		return ""
 	}
 
 	for i := 0; i < TIME_WAIT_MILLISECOND/TIME_CYCLE; i++ {
@@ -239,7 +258,7 @@ if(window.MyGolobalVar == 2) {
 		return "0";
 		`, nil, &value)
 		if err != nil {
-			log.Fatal("Google2 RunScript: ", err)
+			fmt.Println("Google2 RunScript: ", err)
 			break
 		}
 		if value != "0" {
@@ -248,8 +267,10 @@ if(window.MyGolobalVar == 2) {
 		}
 		time.Sleep(TIME_CYCLE * time.Millisecond)
 	}
+	fmt.Println("valueGoogle: ", value)
 	if value != "0" && err == nil {
-		ret = PasreGoogle(value)
+		fmt.Println("-----0000-1---", value)
+		ret = ParseGoogle4(value)
 	} else {
 		ret = "0"
 	}
@@ -261,8 +282,8 @@ func SetEventYandexElement() {
 	var err error
 
 	err = page.RunScript(`
-addEventListener("message", function(event) { 
-		if (event.data.action == "TranslateMess") { 
+addEventListener("message", function(event) {
+		if (event.data.action == "TranslateMess") {
 			console.log("content DONE: ", event.data.payload);
 			window.GlobalText = event.data.payload;
 			window.MyGolobYandExep = 1;
@@ -279,27 +300,35 @@ func SetEventOnGoogle(page *agouti.Page) {
 	var value string
 	var err error
 
-	SetEventYandexElement()
+	//SetEventYandexElement()
 
 	err = page.RunScript(`
-window.MyGolobalVar = 0
-	window.GlobalText = ""
+	window.MyGolobalVar = 0;
+	window.GlobalText = "";
 
 	function locationHashChanged() {
-		window.MyGolobalVar = 1
+		console.log("----004-----");
+		window.MyGolobalVar = 1;
 	}
 
 	window.onhashchange = locationHashChanged;
 
+	console.log("----000-----")
+
 	let oldXHROpen = window.XMLHttpRequest.prototype.open;
 	window.XMLHttpRequest.prototype.open = function(method, url, async, user, password) {
 		this.addEventListener('load', function() {
-			if (window.MyGolobalVar == 1) {
+		console.log("----001-----")
+			if (this.responseText.indexOf("generic") >= 0) {
+			//if (window.MyGolobalVar == 1) {
+			console.log("----002-----")
 				if (this.responseText.indexOf("[[[") >= 0) {
+				console.log("----003-----")
 					window.GlobalText = '' + this.responseText
 					console.log('load('+MyGolobalVar+'): ' + this.responseText);
 					window.MyGolobalVar = 2
 				}
+			//}
 			}
 		});
 
@@ -311,8 +340,9 @@ window.MyGolobalVar = 0
 	}
 	return "0"
 	`, nil, &value)
+
 	if err != nil {
-		log.Fatal("SetEventGoogle RunScript: ", err)
+		fmt.Println("SetEvent2Google RunScript: ", err)
 	}
 }
 
@@ -328,7 +358,7 @@ func GetTranslateYandex(text string) string {
 	}
 
 	err = page.RunScript(`
-window.MyGolobalVar = 0;
+	window.MyGolobalVar = 0;
 
 	//document.querySelector("#srcText").value = TEXT;
 	document.querySelector("#textarea").value = TEXT;
@@ -341,14 +371,14 @@ window.MyGolobalVar = 0;
 	return "0";
 	`, map[string]interface{}{"TEXT": text}, &value)
 	if err != nil {
-		log.Fatal("Yandex RunScript: ", err)
+		fmt.Println("Yandex RunScript: ", err)
 	}
 
 	//ScreenShot()
 
 	for i := 0; i < TIME_WAIT_MILLISECOND/TIME_CYCLE; i++ {
 		err = page.RunScript(`
-if(window.MyGolobalVar == 1) {
+		if(window.MyGolobalVar == 1) {
 			var retString = "" + window.GlobalText;
 			window.GlobalText='';
 			window.MyGolobalVar = 0;
@@ -357,7 +387,7 @@ if(window.MyGolobalVar == 1) {
 		return "0"
 		`, nil, &value)
 		if err != nil {
-			log.Fatal("RunScript: ", err)
+			fmt.Println("RunScript: ", err)
 			break
 		}
 		if value != "0" {
@@ -391,7 +421,7 @@ func SetEventOnYandex(page *agouti.Page) {
 	SetEventYandexElement()
 
 	err = page.RunScript(`
-window.MyGolobalVar = 0
+	window.MyGolobalVar = 0
 	window.GlobalText = ""
 
 	let oldXHROpen = window.XMLHttpRequest.prototype.open;
@@ -415,7 +445,7 @@ window.MyGolobalVar = 0
 	return "0"
 	`, nil, &value)
 	if err != nil {
-		log.Fatal("SetEventYandex RunScript: ", err)
+		fmt.Println("SetEventYandex RunScript: ", err)
 	}
 }
 
@@ -428,13 +458,13 @@ func SetEventOnPromt(page *agouti.Page) {
 	var err error
 
 	err = page.RunScript(`
-window.MyGolobalVar = 0
+	window.MyGolobalVar = 0
 	window.GlobalText = ""
 
 	return "0"
 	`, nil, &value)
 	if err != nil {
-		log.Fatal("SetEventYandex RunScript: ", err)
+		fmt.Println("SetEventYandex RunScript: ", err)
 	}
 }
 
@@ -452,6 +482,8 @@ func MakeTimestamp() int64 {
 
 func GetTranslate(text string) string {
 	var ret string
+	text = strings.ReplaceAll(text, ",", "")
+
 	Mu.Lock()
 	//delta := MakeTimestamp() - DelayTranslate
 	switch GetId() {
@@ -470,6 +502,39 @@ func GetTranslate(text string) string {
 	//DelayTranslate = MakeTimestamp()
 	Mu.Unlock()
 	return ret
+}
+
+func ParseGoogle2(text string) string {
+	in := []byte(text)
+	LEN_ARR := len(in)
+	var out []byte
+	countBrackets := -3
+
+	text = strings.ReplaceAll(text, ")]}'", "")
+	fmt.Println(countBrackets)
+	var flagOpenBrackets bool = false // flag Open brakets
+	var indexOpenBrakets int = 0
+	var indexCountBrakets int = 0
+
+	for i := 0; i < LEN_ARR; i++ {
+		c := in[i]
+		if c == '[' {
+			flagOpenBrackets = true
+			indexOpenBrakets = i
+		} else if c == ']' && flagOpenBrackets {
+			flagOpenBrackets = false
+			if indexCountBrakets == 2 {
+				content := string(in[indexOpenBrakets+1 : i])
+				content = strings.ReplaceAll(content, `\"`, "")
+				contentArray := strings.Split(content, ",")
+				fmt.Println("found [", indexCountBrakets, "]", contentArray[1])
+				return contentArray[1]
+			}
+			indexOpenBrakets = i
+			indexCountBrakets++
+		}
+	}
+	return string(out)
 }
 
 func PasreGoogle(text string) string {
@@ -561,7 +626,7 @@ func RedirectPage() {
 	url = fmt.Sprintf("https://translate.google.com/#view=home&op=translate&sl=%[1]s&tl=%[2]s",
 		PasrseLangGoogle(Lang1), PasrseLangGoogle(Lang2))
 	if err = page.Navigate(url); err != nil {
-		log.Fatal("Failed google to navigate:", err)
+		fmt.Println("Failed google to navigate:", err)
 	}
 	SetEventOnGoogle(page)
 
@@ -569,7 +634,7 @@ func RedirectPage() {
 	url = fmt.Sprintf("https://translate.yandex.ru/?lang=%[1]s-%[2]s",
 		PasrseLangYandex(Lang1), PasrseLangYandex(Lang2))
 	if err = page.Navigate(url); err != nil {
-		log.Fatal("Failed yandex to navigate:", err)
+		fmt.Println("Failed yandex to navigate:", err)
 	}
 	SetEventOnYandex(page)
 
@@ -593,7 +658,7 @@ func ChangeLangPromt() error {
 		err = page.RunScript(string(scriptChangeLangPromt),
 			map[string]interface{}{"LANG_1": pLang1, "LANG_2": pLang2}, &value)
 		if err != nil {
-			log.Fatal("Google RunScript: ", err)
+			fmt.Println("3Google RunScript: ", err)
 		}
 	} else {
 		err = errors.New("Promt not set lang pLang1: " + pLang1 + " pLang2: " + pLang2)
@@ -833,3 +898,68 @@ case "zh_CN" : return "zh"
 case "zh_TW" : return "zh"
 case "bn_BD" : return "bn"
 */
+
+func ParseGoogle3(text string) string {
+	in := []byte(text)
+	LEN_ARR := len(in)
+	var out []byte
+	countBrackets := -3
+
+	text = strings.ReplaceAll(text, ")]}'", "")
+	fmt.Println(countBrackets)
+	var flagOpenBrackets bool = false // flag Open brakets
+	var indexOpenBrakets int = 0
+	var indexCountBrakets int = 0
+
+	for i := 0; i < LEN_ARR; i++ {
+		c := in[i]
+		if c == '[' {
+			flagOpenBrackets = true
+			indexOpenBrakets = i
+		} else if c == ']' && flagOpenBrackets {
+			flagOpenBrackets = false
+			//if indexCountBrakets == 2 {
+			//content := string(in[indexOpenBrakets+1 : i])
+			content := string(in[indexOpenBrakets:i])
+			if strings.Contains(content, `\"`) {
+				content = strings.ReplaceAll(content, `\"`, "")
+				contentArray := strings.Split(content, ",")
+				//fmt.Println("found [", indexCountBrakets, "]", contentArray[1])
+				fmt.Println("found [", indexCountBrakets, "]", contentArray)
+				//return contentArray[1]
+				//}
+			}
+			indexOpenBrakets = i
+			indexCountBrakets++
+		}
+	}
+	return string(out)
+}
+
+func ParseGoogle4(text string) string {
+	text = strings.ReplaceAll(text, ")]}'", "")
+	indexRu := strings.Index(text, `\"ru\"`)
+
+	// Находим секцию где есть ru
+	contentArray := strings.Split(text, `\"ru\"`)
+	if len(contentArray) != 2 {
+		return ""
+	}
+
+	// возвращамемся назада и ищем [[
+	braketsStart := strings.LastIndex(contentArray[0], "[[") + 2
+	braketsEnd := strings.Index(contentArray[1], "]") + indexRu + 1
+
+	textSplit := strings.Split(text[braketsStart:braketsEnd], `",[\"`)
+
+	// Берем из каждой найденной только первые скобки
+	var fullText string
+	for _, it := range textSplit {
+		braketsStart := strings.Index(it, `\"`)
+		if braketsStart > 0 {
+			fullText += it[0:braketsStart]
+		}
+	}
+
+	return fullText
+}
