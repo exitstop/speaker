@@ -25,7 +25,7 @@ var last string
 func main() {
 	var nFlag string
 	flag.StringVar(&nFlag, "ip", "192.168.0.133", "ip")
-	flag.BoolVar(&nFlagTransel, "tr", true, "translate")
+	flag.BoolVar(&nFlagTransel, "tr", false, "translate")
 	flag.Parse()
 	ip = nFlag + ":8484"
 
@@ -101,6 +101,38 @@ func main() {
 	}
 
 	time.Sleep(2 * time.Second)
+
+	{
+		bigText := "Инициализация успешна. Ok."
+		url := "http://" + ip + "/play_on_android"
+
+		type Text struct {
+			Text string `json:"Text"`
+		}
+		user := &Text{Text: bigText}
+		b, err := json.Marshal(user)
+		if err != nil {
+			fmt.Println(err)
+		}
+		r := bytes.NewReader(b)
+
+		client := &http.Client{
+			Timeout: 1 * time.Second,
+		}
+
+		resp, err := client.Post(url, "application/json", r)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		defer resp.Body.Close()
+		bodyBytes, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			log.Fatal(err)
+		}
+		bodyString := string(bodyBytes)
+		fmt.Println(bodyString)
+	}
 
 	add()
 	low()
@@ -205,7 +237,7 @@ func low() {
 //}
 
 func RegexWork(tt string) string {
-	reg, _ := regexp.Compile(`[\_\]\[\@\#]+`)
+	reg, _ := regexp.Compile(`[\_\]\[\@\#\/\:]+`)
 	reg2, _ := regexp.Compile(`([\p{L}])\.([\p{L}])`)
 	reg3, _ := regexp.Compile(`([[:lower:]])([[:upper:]])`)
 	reg4, _ := regexp.Compile(`(\b(\p{L}+)\b)`)

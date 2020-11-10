@@ -53,7 +53,7 @@ func InitBrowser() {
 
 	// --user-data-dir
 	//"user-data-dir": "~/.config/google-chrome",
-	var flagHeadless bool = false
+	var flagHeadless bool = true
 	var flagHeadProxy bool = false
 	var strHeadless string = ""
 	var strProxy string = ""
@@ -85,8 +85,10 @@ func InitBrowser() {
 		"--no-first-run", "--user-data-dir=chrome_config",
 		"--disable-gpu", "--no-sandbox", "--lang=en-US",
 		"user-agent='" + userAgent + "'",
-		"--enable-tab-audio-muting", "--mute-audio", "--no-default-browser-check", "--disable-setuid-sandbox",
-		"--detach=false", strProxy},
+		"--enable-tab-audio-muting", "--mute-audio", "--no-default-browser-check",
+		"--disable-setuid-sandbox",
+		"--detach=false", "--remote-debugging-port=9222",
+		"--trace-startup=*,disabled-by-default-memory-infra", strProxy},
 	)
 
 	//argsChrome2 := agouti.ChromeOptions("extensions", [][]byte{ crxBytes, crxBytes2, crxBytes4 })
@@ -117,6 +119,7 @@ func InitBrowser() {
 	}
 
 	page, err = driverTransl.NewPage()
+
 	if err != nil {
 		fmt.Println("Failed to open page:", err)
 	}
@@ -220,10 +223,10 @@ func GetTranslateGoogle(text string) string {
 
 	page.SwitchToWindow(allNamePageOpen[0])
 
-	ret = YandexElementGetTranslate(text)
-	if ret != "0" && ret != "undefined" {
-		return ret
-	}
+	//ret = YandexElementGetTranslate(text)
+	//if ret != "0" && ret != "undefined" {
+	//return ret
+	//}
 
 	fmt.Println("text: ", text)
 
@@ -347,6 +350,7 @@ func SetEventOnGoogle(page *agouti.Page) {
 }
 
 func GetTranslateYandex(text string) string {
+	return ""
 	var value string
 	var ret string
 	var err error
