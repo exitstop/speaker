@@ -53,4 +53,4 @@ export GOPROXY=direct
 export GOSUMDB=off
 export GOPRIVATE="gitlab.com/FaceChainTeam"
 source ~/.zshrc
-```1
+```
