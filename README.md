@@ -13,7 +13,7 @@ sudo apt-get install -y libx11-dev libxtst-dev libxt-dev libxinerama-dev libx11-
 ```
 
 # Always on bottom
-# https://askubuntu.com/questions/351720/how-to-start-an-application-with-bottom-most-property
+- https://askubuntu.com/questions/351720/how-to-start-an-application-with-bottom-most-property
 ```bash
 sudo apt-get install devilspie4
 vim ~/.config/devilspie2/chromium.lua
