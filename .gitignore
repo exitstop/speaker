@@ -7,6 +7,7 @@
 !*configs/
 !*internal
 !*internal/browser
+!*internal/browserlist
 !*examples
 !*scripts
 !*scripts/elementYandex
