@@ -25,7 +25,7 @@ var last string
 func main() {
 	var nFlag string
 	flag.StringVar(&nFlag, "ip", "192.168.0.133", "ip")
-	flag.BoolVar(&nFlagTransel, "tr", false, "translate")
+	flag.BoolVar(&nFlagTransel, "t", false, "translate")
 	flag.Parse()
 	ip = nFlag + ":8484"
 
@@ -140,6 +140,16 @@ func main() {
 
 }
 
+var translSave string
+
+func SaveTransl(input string) {
+	translSave = input
+}
+
+func GatLastTransl() string {
+	return translSave
+}
+
 func add() {
 	fmt.Println("--- Please press ctrl + c to stop hook ---")
 
@@ -155,21 +165,39 @@ func add() {
 			fmt.Println(err)
 		}
 		fmt.Println(actual)
-		if actual == "" || actual == " " {
-			return
-		}
-		last = actual
-
 		var transl string
 
-		if nFlagTransel {
-			// hello world
-			transl = browser.GetTranslateGoogle(actual)
+		if last == actual {
+			// Повторяем в слух уже переведенное ранее
+			transl = GatLastTransl()
+			fmt.Println("-----------------------")
+			fmt.Println("----last: ", last)
+			fmt.Println("----transl: ", transl)
+			fmt.Println("-----------------------")
 		} else {
-			transl = actual
-		}
 
-		fmt.Println("transl:", transl, "h:", actual)
+			words := strings.Fields(actual)
+
+			if len(words) == 1 {
+				actual = "word, " + actual
+			}
+
+			if actual == "" || actual == " " {
+				return
+			}
+
+			last = actual
+
+			if nFlagTransel {
+				// hello world
+				transl = browser.GetTranslateGoogle(actual)
+			} else {
+				transl = actual
+			}
+
+			SaveTransl(transl)
+		}
+		fmt.Println("transl:", transl, actual)
 
 		if transl != "0" {
 
