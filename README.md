@@ -1,5 +1,11 @@
 # speaker
 
+# Как запустить
+
+```bash
+go run cmd/speaker/main.go -ip 192.168.0.133 -t
+```
+
 # find only dir
 
 ```bash
