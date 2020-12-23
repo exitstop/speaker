@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"strings"
+
+	"github.com/exitstop/speaker/internal/browser"
 )
 
 func main() {
@@ -43,9 +45,18 @@ func main() {
 ,["e",4,null,null,1578]
 ]]
 `,
+		`
+)]}
+
+[[["wrb.fr","MkEWBc","[[null,null,\"en\",[[[0,[[[null,34]\n]\n,[true]\n]\n]\n]\n,34]\n]\n,[[[null,\"Pozhaluysta, nazhmite ctrl + c, chtoby ostanovit' khuk\",null,null,null,[[\"Пожалуйста, нажмите ctrl + c, чтобы остановить хук\",[\"Пожалуйста, нажмите ctrl + c, чтобы остановить хук\",\"Пожалуйста, нажмите CTRL + C, чтобы остановить крюк\"]\n]\n]\n]\n]\n,\"ru\",1,\"auto\",[\"Please press ctrl + c to stop hook\",\"auto\",\"ru\",true]\n]\n,\"en\"]\n",null,null,null,"generic"]
+,["di",24]
+,["af.httprm",23,"-3626247769773888654",10]
+,["e",4,null,null,670]
+]]
+`,
 	}
 	for _, it := range input {
-		ret := ParseGoogle4(it)
+		ret := browser.ParseGoogle5(it)
 		fmt.Println(ret)
 		fmt.Println("--------------")
 	}

@@ -273,7 +273,7 @@ if(window.MyGolobalVar == 2) {
 	fmt.Println("valueGoogle: ", value)
 	if value != "0" && err == nil {
 		fmt.Println("-----0000-1---", value)
-		ret = ParseGoogle4(value)
+		ret = ParseGoogle5(value)
 	} else {
 		ret = "0"
 	}
@@ -949,6 +949,39 @@ func ParseGoogle4(text string) string {
 	if len(contentArray) != 2 {
 		return ""
 	}
+
+	// возвращамемся назада и ищем [[
+	braketsStart := strings.LastIndex(contentArray[0], "[[") + 2
+	braketsEnd := strings.Index(contentArray[1], "]") + indexRu + 1
+
+	textSplit := strings.Split(text[braketsStart:braketsEnd], `",[\"`)
+
+	// Берем из каждой найденной только первые скобки
+	var fullText string
+	for _, it := range textSplit {
+		braketsStart := strings.Index(it, `\"`)
+		if braketsStart > 0 {
+			fullText += it[0:braketsStart]
+		}
+	}
+
+	return fullText
+}
+
+func ParseGoogle5(text string) string {
+	text = strings.ReplaceAll(text, ")]}'", "")
+	//text = strings.ReplaceAll(text, `]\n`, "")
+	//indexRu := strings.Index(text, `\"ru\"`)
+	indexRu := strings.Index(text, `\"ru\"`)
+
+	// Находим секцию где есть ru
+	contentArray := strings.Split(text, `\"ru\"`)
+	if len(contentArray) < 2 {
+		fmt.Println("null")
+		return ""
+	}
+
+	fmt.Println("contentArray: ", contentArray[0])
 
 	// возвращамемся назада и ищем [[
 	braketsStart := strings.LastIndex(contentArray[0], "[[") + 2
