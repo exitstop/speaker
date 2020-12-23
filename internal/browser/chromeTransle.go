@@ -981,7 +981,7 @@ func ParseGoogle5(text string) string {
 		return ""
 	}
 
-	fmt.Println("contentArray: ", contentArray[0])
+	//fmt.Println("contentArray: ", contentArray[0])
 
 	// возвращамемся назада и ищем [[
 	braketsStart := strings.LastIndex(contentArray[0], "[[") + 2
