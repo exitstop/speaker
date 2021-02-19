@@ -45,7 +45,7 @@ devilspie2 --debug
 wget https://chromedriver.storage.googleapis.com/86.0.4240.22/chromedriver_linux64.zip
 extract extract chromedriver_linux64.zip
 cd chromedriver_linux64
-sudo mv chromdriver /usr/local/bin/
+sudo mv chromedriver /usr/local/bin/
 ```
 # Fix go mod build private repo
 

@@ -200,7 +200,6 @@ func add() {
 		fmt.Println("transl:", transl, actual)
 
 		if transl != "0" {
-
 			bigText := RegexWork(transl)
 			url := "http://" + ip + "/play_on_android"
 
@@ -218,6 +217,7 @@ func add() {
 			r := bytes.NewReader(b)
 
 			resp, err := client.Post(url, "application/json", r)
+
 			if err != nil {
 				fmt.Println(err)
 				return

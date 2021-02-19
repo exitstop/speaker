@@ -2,17 +2,20 @@
 # Запрещаем вообще все
 *
 
+# find . -type d | cut -c 3- | sed 's/^/!*/' | grep -v ".git"
 # Затем
 # Разрешаем мониторить эти папки
-!*configs/
-!*internal
-!*internal/browser
-!*internal/browserlist
+!*configs
 !*examples
-!*scripts
-!*scripts/elementYandex
+!*internal
+!*internal/google
+!*internal/browserlist
+!*internal/browser
 !*cmd
 !*cmd/speaker
+!*cmd/chrome
+!*scripts
+!*scripts/elementYandex
 
 # И в этих папках брать только эти форматы
 !*.ini
