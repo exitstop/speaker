@@ -120,7 +120,6 @@ func Add(event chan string) {
 			return
 		}
 		processedString := reg.ReplaceAllString(text, " ")
-		//fmt.Sprintf("SendoToGoole: %s\n", processedString)
 
 		logrus.WithFields(logrus.Fields{
 			"SendoToGoole": processedString,
