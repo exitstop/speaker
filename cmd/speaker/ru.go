@@ -62,7 +62,8 @@ func main() {
 
 	{
 		url := "http://" + ip + "/set_engine"
-		data := []byte(`{"Text": "com.acapelagroup.android.tts"}`)
+		data := []byte(`{"Text": "com.google.android.tts"}`)
+		//data := []byte(`{"Text": "com.acapelagroup.android.tts"}`)
 		r := bytes.NewReader(data)
 
 		resp, err := clientLong.Post(url, "application/json", r)

@@ -54,6 +54,16 @@ func main() {
 ,["e",4,null,null,670]
 ]]
 `,
+		`load(0): )]}'
+
+898
+[["wrb.fr","MkEWBc","[[null,null,\"en\",[[[0,[[[null,105]\n]\n,[true]\n]\n]\n]\n,105]\n]\n,[[[null,\"Vy takzhe mozhete ukazat' JSHandle v kachestve znacheniya svoystva, yesli khotite, chtoby zhivyye ob\\\"yekty peredavalis' v sobytiye:\",null,null,null,[[\"Вы также можете указать JSHandle в качестве значения свойства, если хотите, чтобы живые объекты передавались в событие:\",[\"Вы также можете указать JSHandle в качестве значения свойства, если хотите, чтобы живые объекты передавались в событие:\",\"Вы также можете указать JSHandle в качестве значения свойства, если вы хотите живые объекты должны быть переданы в случае:\"]\n]\n]\n]\n]\n,\"ru\",1,\"auto\",[\"You can also specify JSHandle as the property value if you want live objects to be passed into the event:\",\"auto\",\"ru\",true]\n]\n,\"en\"]\n",null,null,null,"generic"]
+,["di",32]
+,["af.httprm",31,"-3457224819668688087",266]
+]
+27
+[["e",4,null,null,1214]
+]`,
 	}
 	for _, it := range input {
 		ret := browser.ParseGoogle5(it)

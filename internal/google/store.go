@@ -1,10 +1,21 @@
 package google
 
-import "github.com/mxschmitt/playwright-go"
+import (
+	"time"
+
+	"github.com/mxschmitt/playwright-go"
+)
 
 type GStore struct {
-	Url     string
-	Pw      *playwright.Playwright
-	Browser playwright.Browser
-	Page    playwright.Page
+	Url                  string
+	ToTranslete          string
+	ChanTranslateMe      chan string
+	Terminatate          chan bool
+	SendTranslateToSpeak chan string
+
+	TimeoutWaitTranslate   time.Duration
+	CountLoopWaitTranslate int
+	Pw                     *playwright.Playwright
+	Browser                playwright.Browser
+	Page                   playwright.Page
 }

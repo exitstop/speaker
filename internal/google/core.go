@@ -4,10 +4,16 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/exitstop/speaker/internal/browser"
 	"github.com/mxschmitt/playwright-go"
 )
 
 func Create() (gstore GStore) {
+	gstore.TimeoutWaitTranslate = 100 * time.Millisecond
+	gstore.CountLoopWaitTranslate = 20
+	gstore.ChanTranslateMe = make(chan string)
+	gstore.Terminatate = make(chan bool)
+
 	return
 }
 
@@ -17,7 +23,7 @@ func (s *GStore) Start() (err error) {
 		return
 	}
 	s.Browser, err = s.Pw.Chromium.Launch(playwright.BrowserTypeLaunchOptions{
-		Headless: playwright.Bool(false),
+		//Headless: playwright.Bool(false),
 		//ChromiumSandbox: playwright.Bool(false),
 	})
 	if err != nil {
@@ -35,19 +41,6 @@ func (s *GStore) Start() (err error) {
 		err = fmt.Errorf("Goole: %v\n", err)
 		return
 	}
-
-	//// mw.config.values is the JS object where Wikipedia stores wiki metadata
-	//handle, err := page.EvaluateHandle("mw.config.values", struct{}{})
-	//if err != nil {
-	//log.Fatalf("could not acquire JSHandle: %v\n", err)
-	//}
-	//// mw.config.values.wgPageName is the name of the current page
-	//pageName, err := handle.(playwright.JSHandle).GetProperty("wgPageName")
-	//if err != nil {
-	//log.Fatalf("could not get Wikipedia page name: %v\n", err)
-	//}
-
-	//fmt.Printf("Lots of type casting, brought to you by %s\n", pageName)
 
 	return
 }
@@ -77,25 +70,55 @@ func (s *GStore) Google() (err error) {
 		return
 	}
 
-	if err = s.SetText("hello"); err != nil {
-		err = fmt.Errorf("could not set text: %v\n", err)
-		return
-	}
-
-	for i := 0; i < 15; i++ {
-		text, err := s.GetTextGoogle()
-		if err != nil {
-			time.Sleep(100 * time.Millisecond)
-			continue
-		}
-
-		fmt.Println(text)
-		break
-	}
-
 	return
 }
 
+// Запускаем обработчик ожидающий строки для перевода
+func (s *GStore) LoopTransalate() (err error) {
+
+FOR0:
+	for {
+		select {
+		case s.ToTranslete = <-s.ChanTranslateMe:
+		case <-s.Terminatate:
+			break FOR0
+		}
+
+		s.ClearVar()
+
+		if err = s.SetText(s.ToTranslete); err != nil {
+			err = fmt.Errorf("could not set text: %v\n", err)
+			break
+		}
+
+		translateText, err := s.WaitTextTranslate()
+
+		if err != nil {
+			err = fmt.Errorf("could no translate text: %v\n", err)
+			continue
+		} else {
+			//fmt.Println(translateText)
+			s.SendTranslateToSpeak <- translateText
+		}
+	}
+	return
+}
+
+// Ждем пока появится перевод
+func (s *GStore) WaitTextTranslate() (parseText string, err error) {
+	for i := 0; i < s.CountLoopWaitTranslate; i++ {
+		text, err := s.GetTextGoogle()
+		if err != nil {
+			time.Sleep(s.TimeoutWaitTranslate)
+			continue
+		}
+		parseText = browser.ParseGoogle5(text)
+		break
+	}
+	return
+}
+
+// Забираем перевод
 func (s *GStore) GetTextGoogle() (text string, err error) {
 	handle, err := s.Page.EvaluateHandle(JS_GET_TEXT_GOOGLE)
 	if err != nil {
@@ -109,6 +132,16 @@ func (s *GStore) GetTextGoogle() (text string, err error) {
 		return
 	}
 
+	return
+}
+
+// Очищаем переменную js с переводом
+func (s *GStore) ClearVar() (err error) {
+	_, err = s.Page.Evaluate(JS_CLEAR_VAR)
+	if err != nil {
+		err = fmt.Errorf("could clear var: %v\n", err)
+		return
+	}
 	return
 }
 

@@ -44,12 +44,4 @@ window.XMLHttpRequest.prototype.open = function() {
 
 var JS_GET_TEXT_GOOGLE string = `window.GlobalText`
 
-////if(window.MyGlobalVar == 2) {
-//console.log("JS_GET_TEXT_GOOGLE");
-//var retString = "" + window.GlobalText;
-//console.log("retString: ", retString);
-//window.GlobalText='';
-//window.MyGolobalVar = 0;
-//return retString;
-////}
-////return false;
+var JS_CLEAR_VAR string = `window.GlobalText = ""`

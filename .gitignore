@@ -13,6 +13,7 @@
 !*internal/browser
 !*cmd
 !*cmd/speaker
+!*cmd/voice
 !*cmd/chrome
 !*scripts
 !*scripts/elementYandex
