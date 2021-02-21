@@ -84,6 +84,13 @@ FOR0:
 			break FOR0
 		}
 
+		if s.LastTranslete == s.ToTranslete {
+			s.SendTranslateToSpeak <- s.TranslatedText
+			fmt.Println("REPEATE LAST TRANSLATE")
+			continue
+		}
+		s.LastTranslete = s.ToTranslete
+
 		s.ClearVar()
 
 		if err = s.SetText(s.ToTranslete); err != nil {
@@ -91,14 +98,14 @@ FOR0:
 			break
 		}
 
-		translateText, err := s.WaitTextTranslate()
+		s.TranslatedText, err = s.WaitTextTranslate()
 
 		if err != nil {
 			err = fmt.Errorf("could no translate text: %v\n", err)
 			continue
 		} else {
 			//fmt.Println(translateText)
-			s.SendTranslateToSpeak <- translateText
+			s.SendTranslateToSpeak <- s.TranslatedText
 		}
 	}
 	return

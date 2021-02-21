@@ -9,6 +9,8 @@ import (
 type GStore struct {
 	Url                  string
 	ToTranslete          string
+	LastTranslete        string
+	TranslatedText       string
 	ChanTranslateMe      chan string
 	Terminatate          chan bool
 	SendTranslateToSpeak chan string
