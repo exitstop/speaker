@@ -11,6 +11,7 @@
 !*internal/google
 !*internal/browserlist
 !*internal/browser
+!*internal/console
 !*cmd
 !*cmd/speaker
 !*cmd/voice

@@ -3,13 +3,24 @@ package main
 import (
 	"fmt"
 	"log"
-	"time"
 
+	"github.com/FaceChainTeam/gocommonutil/logger"
+	"github.com/exitstop/speaker/internal/console"
 	"github.com/exitstop/speaker/internal/google"
 	"github.com/exitstop/speaker/internal/voice"
+	"github.com/sirupsen/logrus"
 )
 
 func main() {
+	{
+		logger.InitLog("trace", "proxy", "/var/log/facechain/")
+
+		logrus.SetLevel(logrus.InfoLevel)
+
+		logrus.WithFields(logrus.Fields{
+			"Keyboard": "ok",
+		}).Info("Init")
+	}
 	gstore := google.Create()
 
 	// Запускаем браузер
@@ -24,19 +35,28 @@ func main() {
 
 	gstore.SendTranslateToSpeak = v.ChanSpeakMe
 
-	// Переводчик сам будет слать в chan ChanSpeakMe, чтобы голос воспроизводился
 	go func() {
-		time.Sleep(3 * time.Second)
-		gstore.ChanTranslateMe <- `You can also specify JSHandle as the property value if you want live objects to be passed into the event:`
-		time.Sleep(3 * time.Second)
-		gstore.ChanTranslateMe <- `Here you hand errorChannelWatch the errorList as a value.`
-
-		time.Sleep(3 * time.Second)
-		gstore.ChanTranslateMe <- `To remedy the situation, either hand a slice pointer to errorChannelWatch or rewrite it as a call to a closure, capturing errorList.`
+		//console.Keyboard()
+		console.Add(gstore.ChanTranslateMe)
+		console.Low()
+		console.Event()
 
 		gstore.Terminatate <- true
 		v.Terminatate <- true
 	}()
+	// Переводчик сам будет слать в chan ChanSpeakMe, чтобы голос воспроизводился
+	//go func() {
+	//time.Sleep(3 * time.Second)
+	//gstore.chantranslateme <- `You can also specify JSHandle as the property value if you want live objects to be passed into the event:`
+	//time.Sleep(3 * time.Second)
+	//gstore.ChanTranslateMe <- `Here you hand errorChannelWatch the errorList as a value.`
+
+	//time.Sleep(3 * time.Second)
+	//gstore.ChanTranslateMe <- `To remedy the situation, either hand a slice pointer to errorChannelWatch or rewrite it as a call to a closure, capturing errorList.`
+
+	//gstore.Terminatate <- true
+	//v.Terminatate <- true
+	//}()
 
 	go func() {
 		// Обработка строк для перевода, посылаемых через ChanTranslateMe
