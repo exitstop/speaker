@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"log"
 
@@ -12,6 +13,13 @@ import (
 )
 
 func main() {
+	var nFlag string
+	var nFlagTransel bool
+
+	flag.StringVar(&nFlag, "ip", "192.168.0.133", "ip")
+	flag.BoolVar(&nFlagTransel, "t", false, "translate")
+	flag.Parse()
+
 	{
 		logger.InitLog("trace", "proxy", "/var/log/facechain/")
 
@@ -31,7 +39,7 @@ func main() {
 
 	// voice
 	v := voice.Create()
-	v.IP = "192.168.0.133:8484"
+	v.IP = nFlag + ":8484"
 
 	gstore.SendTranslateToSpeak = v.ChanSpeakMe
 

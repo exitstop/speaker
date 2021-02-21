@@ -52,6 +52,13 @@ func (v *VoiceStore) Start() (err error) {
 	}
 	fmt.Println(out)
 
+	str := fmt.Sprintf(`{"Text": "Инициализация успешна"}`)
+	out, err = v.Requset("play_on_android", str)
+	if err != nil {
+		return err
+	}
+	fmt.Println(out)
+
 	err = v.SpeekLoop()
 
 	return
