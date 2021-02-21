@@ -6,6 +6,8 @@ import (
 	"io/ioutil"
 	"net/http"
 	"time"
+
+	"github.com/sirupsen/logrus"
 )
 
 type VoiceStore struct {
@@ -23,7 +25,7 @@ type VoiceStore struct {
 
 func Create() (v VoiceStore) {
 	v.Client = &http.Client{
-		Timeout: 1 * time.Second,
+		Timeout: 2 * time.Second,
 	}
 
 	v.ChanSpeakMe = make(chan string)
@@ -76,7 +78,10 @@ FOR0:
 		str := fmt.Sprintf(`{"Text": "%s"}`, v.SpeakMe)
 		out, err := v.Requset("play_on_android", str)
 		if err != nil {
-			return err
+			logrus.WithFields(logrus.Fields{
+				"err": err,
+			}).Error("SpeakLoop")
+			continue
 		}
 		fmt.Println(out)
 		time.Sleep(time.Second * 1)

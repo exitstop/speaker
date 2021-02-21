@@ -73,7 +73,7 @@ func Keyboard() (err error) {
 
 	logrus.WithFields(logrus.Fields{
 		"Keyboard": "ok",
-	}).Info("Init")
+	}).Info("keyboard")
 
 FOR0:
 	for {
@@ -123,7 +123,7 @@ func Add(event chan string) {
 
 		logrus.WithFields(logrus.Fields{
 			"SendoToGoole": processedString,
-		}).Warn("Init")
+		}).Warn("google")
 
 		event <- processedString
 	})

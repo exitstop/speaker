@@ -9,8 +9,8 @@ import (
 )
 
 func Create() (gstore GStore) {
-	gstore.TimeoutWaitTranslate = 100 * time.Millisecond
-	gstore.CountLoopWaitTranslate = 20
+	gstore.TimeoutWaitTranslate = 50 * time.Millisecond
+	gstore.CountLoopWaitTranslate = 40
 	gstore.ChanTranslateMe = make(chan string)
 	gstore.Terminatate = make(chan bool)
 
