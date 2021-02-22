@@ -11,16 +11,13 @@ import (
 )
 
 type VoiceStore struct {
-	IP              string
-	Port            string
-	TranslateMe     string
-	Translated      string
-	LastTranslated  string
-	LastTranslateMe string
-	SpeakMe         string
-	Client          *http.Client
-	ChanSpeakMe     chan string
-	Terminatate     chan bool
+	IP          string
+	Port        string
+	SpeakMe     string
+	Client      *http.Client
+	ChanSpeakMe chan string
+	Terminatate chan bool
+	SpeechSpeed float64
 }
 
 func Create() (v VoiceStore) {
@@ -30,6 +27,7 @@ func Create() (v VoiceStore) {
 
 	v.ChanSpeakMe = make(chan string)
 	v.Terminatate = make(chan bool)
+	v.SpeechSpeed = 3.6
 
 	return v
 }
@@ -63,6 +61,24 @@ func (v *VoiceStore) Start() (err error) {
 
 	err = v.SpeekLoop()
 
+	return
+}
+
+func (v *VoiceStore) SpeedSub() (out string, speed float64, err error) {
+	v.SpeechSpeed -= 0.1
+	strSpeed := fmt.Sprintf(`{"SpeechRate": %.2f}`, v.SpeechSpeed)
+	out, err = v.Requset("set_speech_rate", strSpeed)
+	out = fmt.Sprintf("%s %.1f", out, v.SpeechSpeed)
+	speed = v.SpeechSpeed
+	return
+}
+
+func (v *VoiceStore) SpeedAdd() (out string, speed float64, err error) {
+	v.SpeechSpeed += 0.1
+	strSpeed := fmt.Sprintf(`{"SpeechRate": %.2f}`, v.SpeechSpeed)
+	out, err = v.Requset("set_speech_rate", strSpeed)
+	out = fmt.Sprintf("%s %.1f", out, v.SpeechSpeed)
+	speed = v.SpeechSpeed
 	return
 }
 

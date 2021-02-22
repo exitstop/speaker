@@ -7,6 +7,7 @@ import (
 	"github.com/FaceChainTeam/gocommonutil/logger"
 	"github.com/atotto/clipboard"
 	"github.com/eiannone/keyboard"
+	"github.com/exitstop/speaker/internal/voice"
 	"github.com/go-vgo/robotgo"
 	hook "github.com/robotn/gohook"
 	"github.com/sirupsen/logrus"
@@ -104,11 +105,33 @@ FOR0:
 	return
 }
 
-func Add(event chan string) {
+func Add(event chan string, voice *voice.VoiceStore) {
 	fmt.Println("--- Please press ctrl + shift + q to stop hook ---")
 	robotgo.EventHook(hook.KeyDown, []string{"q", "ctrl", "shift"}, func(e hook.Event) {
 		fmt.Println("ctrl-shift-q")
 		robotgo.EventEnd()
+	})
+
+	robotgo.EventHook(hook.KeyDown, []string{"-", "alt"}, func(e hook.Event) {
+		fmt.Println("-", "alt")
+		out, speed, err := voice.SpeedSub()
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		fmt.Println(out)
+		voice.ChanSpeakMe <- fmt.Sprintf("%.1f", speed)
+	})
+
+	robotgo.EventHook(hook.KeyDown, []string{"+", "alt"}, func(e hook.Event) {
+		fmt.Println("+", "alt")
+		out, speed, err := voice.SpeedAdd()
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		fmt.Println(out)
+		voice.ChanSpeakMe <- fmt.Sprintf("%.1f", speed)
 	})
 
 	fmt.Println("--- Please press c---")

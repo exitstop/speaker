@@ -45,7 +45,7 @@ func main() {
 
 	go func() {
 		//console.Keyboard()
-		console.Add(gstore.ChanTranslateMe)
+		console.Add(gstore.ChanTranslateMe, &v)
 		console.Low()
 		console.Event()
 
