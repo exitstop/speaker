@@ -200,10 +200,6 @@ func Add(event chan string, voice *voice.VoiceStore) {
 			return
 		}
 
-		logrus.WithFields(logrus.Fields{
-			"SendoToGoole": processedString,
-		}).Warn("google")
-
 		if voice.NoTranslate {
 			processedString, err := RegexWorkRu(text)
 			if err != nil {
@@ -214,6 +210,9 @@ func Add(event chan string, voice *voice.VoiceStore) {
 			}
 			voice.ChanSpeakMe <- processedString
 		} else {
+			logrus.WithFields(logrus.Fields{
+				"SendoToGoole": processedString,
+			}).Warn("google")
 			event <- processedString
 		}
 	})
