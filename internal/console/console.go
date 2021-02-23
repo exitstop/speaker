@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"regexp"
 	"strings"
+	"time"
 
 	"github.com/atotto/clipboard"
 	"github.com/eiannone/keyboard"
@@ -109,7 +110,13 @@ func Add(event chan string, voice *voice.VoiceStore) {
 	fmt.Println("--- Please press ctrl + shift + q to stop hook ---")
 	robotgo.EventHook(hook.KeyDown, []string{"q", "ctrl", "shift"}, func(e hook.Event) {
 		fmt.Println("ctrl-shift-q")
-		robotgo.EventEnd()
+		//robotgo.EventEnd()
+
+		voice.ChanSpeakMe <- "завершение программы"
+		time.Sleep(1 * time.Second)
+
+		voice.Terminatate <- true
+		voice.Terminatate <- true
 	})
 
 	robotgo.EventHook(hook.KeyDown, []string{"-", "alt"}, func(e hook.Event) {

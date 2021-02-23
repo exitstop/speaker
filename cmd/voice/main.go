@@ -41,6 +41,8 @@ func main() {
 	v := voice.Create()
 	v.IP = nFlag + ":8484"
 
+	gstore.Terminatate = v.Terminatate
+
 	gstore.SendTranslateToSpeak = v.ChanSpeakMe
 
 	go func() {
@@ -50,8 +52,9 @@ func main() {
 		console.Event()
 
 		gstore.Terminatate <- true
-		v.Terminatate <- true
+		gstore.Terminatate <- true
 	}()
+
 	// Переводчик сам будет слать в chan ChanSpeakMe, чтобы голос воспроизводился
 	//go func() {
 	//time.Sleep(3 * time.Second)
