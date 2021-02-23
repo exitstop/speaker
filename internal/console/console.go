@@ -252,6 +252,8 @@ func RegexWork(tt string) (out string, err error) {
 
 	singleSpacePattern := regexp.MustCompile(`\s+`)
 	tt = singleSpacePattern.ReplaceAllString(tt, " ")
+	tt = strings.ReplaceAll(tt, " .", ".")
+	tt = strings.ReplaceAll(tt, " ,", ",")
 
 	tt = strings.TrimSpace(tt)
 	return tt, err
