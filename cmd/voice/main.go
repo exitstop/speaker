@@ -36,12 +36,22 @@ func main() {
 		log.Println(err)
 		return
 	}
+	defer gstore.Stop()
 
 	// voice
 	v := voice.Create()
 	v.IP = nFlag + ":8484"
 
 	gstore.Terminatate = v.Terminatate
+
+	//Signal := make(chan os.Signal)
+	//signal.Notify(Signal, os.Interrupt)
+	//signal.Notify(Signal, syscall.SIGINT, syscall.SIGTERM)
+	//// graceful shutdown
+	//go func() {
+	//<-Signal
+	//gstore.Terminatate <- true
+	//}()
 
 	gstore.SendTranslateToSpeak = v.ChanSpeakMe
 
@@ -87,14 +97,16 @@ func main() {
 
 	err := v.Start()
 	if err != nil {
+		gstore.Terminatate <- true
+		gstore.Terminatate <- true
 		fmt.Println(err)
 		return
 	}
 
-	v.Stop()
+	defer v.Stop()
 
-	if err := gstore.Stop(); err != nil {
-		log.Println(err)
-		return
-	}
+	//if err := gstore.Stop(); err != nil {
+	//log.Println(err)
+	//return
+	//}
 }
