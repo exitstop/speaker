@@ -273,7 +273,7 @@ if(window.MyGolobalVar == 2) {
 	fmt.Println("valueGoogle: ", value)
 	if value != "0" && err == nil {
 		fmt.Println("-----0000-1---", value)
-		ret = ParseGoogle5(value)
+		ret, _ = ParseGoogle5(value)
 	} else {
 		ret = "0"
 	}
@@ -968,7 +968,7 @@ func ParseGoogle4(text string) string {
 	return fullText
 }
 
-func ParseGoogle5(text string) string {
+func ParseGoogle5(text string) (fullText string, err error) {
 	text = strings.ReplaceAll(text, ")]}'", "")
 	//text = strings.ReplaceAll(text, `]\n`, "")
 	//indexRu := strings.Index(text, `\"ru\"`)
@@ -976,33 +976,52 @@ func ParseGoogle5(text string) string {
 
 	// Находим секцию где есть ru
 	contentArray := strings.Split(text, `\"ru\"`)
+
 	if len(contentArray) < 2 {
-		fmt.Println("null")
-		return ""
+		err = fmt.Errorf("не удалось распарсить тектс")
+		fullText = text
+		return
 	}
 
 	//fmt.Println("contentArray: ", contentArray[0])
 
 	// возвращамемся назад и ищем [[
-	braketsStart := strings.LastIndex(contentArray[0], "[[") + 2
-	braketsEnd := strings.Index(contentArray[1], "]") + indexRu + 1
+	braketsStart := strings.LastIndex(contentArray[0], "[[") + 4
+	braketsEnd := strings.Index(contentArray[1], "]") + indexRu - 14
 
 	textSplit := strings.Split(text[braketsStart:braketsEnd], `",[\"`)
 
+	if len(textSplit) < 2 {
+		fullText += textSplit[0]
+		return
+	}
+
 	//fmt.Println("braketsStart: ", braketsStart)
 	//fmt.Println("braketsEnd : ", braketsEnd)
-	//fmt.Println("textSplit : ", textSplit)
+	//for i, it := range textSplit {
+	//fmt.Println("textSplit[", i, "]: ", it)
+	//}
 
 	// Берем из каждой найденной только первые скобки
-	var fullText string
 	for _, it := range textSplit {
-		braketsStart := strings.Index(it, `"]`)
-		//fmt.Println("braketsStart: ", braketsStart)
+		//braketsStart = strings.Index(it, `"]`)
+		braketsStart := strings.Index(it, `\",`)
+		//it = replaceAtIndex(it, '@', braketsStart)
+		//fmt.Println("braketsStart: ", it)
 		//fmt.Println("it: ", it)
 		if braketsStart > 0 {
-			fullText += it[2 : braketsStart-1]
+			fullText += it[0:braketsStart]
+			//braketsStart = strings.Index(fullText, `"]`)
+			//fullText = fullText[0:braketsStart]
 		}
 	}
 
-	return fullText
+	return
+}
+
+func replaceAtIndex(str string, replacement rune, index int) string {
+	if index < 0 {
+		return str
+	}
+	return str[:index] + string(replacement) + str[index+1:]
 }

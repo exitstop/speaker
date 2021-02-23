@@ -166,8 +166,20 @@ func Add(event chan string, voice *voice.VoiceStore) {
 		if voice.Pause {
 			return
 		}
-		text, _ := clipboard.ReadAll()
+		time.Sleep(time.Millisecond * 50)
+		text, err := clipboard.ReadAll()
+
+		if err != nil {
+			logrus.WithFields(logrus.Fields{
+				"err": err,
+			}).Warn("clipboard")
+
+			voice.ChanSpeakMe <- fmt.Sprintf("не скопировалось")
+			return
+		}
+
 		processedString, err := RegexWork(text)
+
 		if err != nil {
 			logrus.WithFields(logrus.Fields{
 				"err": err,

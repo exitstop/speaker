@@ -104,7 +104,8 @@ FOR0:
 		if err != nil {
 			err = fmt.Errorf("could no translate text: %v\n", err)
 
-			s.SendTranslateToSpeak <- "не удалось перевести"
+			//s.SendTranslateToSpeak <- "не удалось перевести"
+			s.SendTranslateToSpeak <- err.Error()
 
 			logrus.WithFields(logrus.Fields{
 				"err": err,
@@ -127,7 +128,7 @@ func (s *GStore) WaitTextTranslate() (parseText string, err error) {
 			time.Sleep(s.TimeoutWaitTranslate)
 			continue
 		}
-		parseText = browser.ParseGoogle5(text)
+		parseText, err = browser.ParseGoogle5(text)
 		break
 	}
 	if parseText == "" {

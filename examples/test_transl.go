@@ -77,17 +77,30 @@ func main() {
 [["e",4,null,null,4737]
 ]
 `,
+		`load(0): )]}'
+
+3053
+[["wrb.fr","MkEWBc","[[null,null,\"en\",[[[0,[[[null,142]\n]\n,[true]\n]\n]\n,[1,[[[null,143]\n,[143,274]\n]\n,[false,true]\n]\n]\n,[2,[[[null,275]\n,[275,469]\n]\n,[false,true]\n]\n]\n]\n,469]\n]\n,[[[null,\"Chto takoye ugadayte khesh besplatnoy programmy gornodobyvayushchey kriptovalyuty, blagodarya kotoromu pol'zovatel' mozhet poluchit' neogranichennoye kolichestvo BTC iz odnogo besplatnogo lotereynogo bileta. Podrobneye Pol'zovateli Boleye krupnyye dzhekpoty My sozdayem basseyn premii Dzhekpota cherez sovmestnuyu rabotu vsekh videokart vsekh nashikh uchastnikov. Chtoby vyigrat' dzhekpot, vam nuzhno prosto dogadat'sya 4 poslednikh kolichestva sluchaynykh bitkoynovskoy tranzaktsii, i da, eto tak prostoye data rozygrysha 30.04.2021 Tekushchiy dzhekpot 110 000 Tekushchiye uchastniki № 1030\",null,null,null,[[\"Что такое угадайте хэш бесплатной программы горнодобывающей криптовалюты, благодаря которому пользователь может получить неограниченное количество BTC из одного бесплатного лотерейного билета.\",[\"Что такое угадайте хэш бесплатной программы горнодобывающей криптовалюты, благодаря которому пользователь может получить неограниченное количество BTC из одного бесплатного лотерейного билета.\",\"Что Guess Hash Программа добыча бесплатно криптовалюта, благодаря которому пользователь может получить неограниченное количество BTC от одного бесплатного лотерейного билета.\"]\n]\n,[\"Подробнее Пользователи Более крупные джекпоты Мы создаем бассейн премии Джекпота через совместную работу всех видеокарт всех наших участников.\",[\"Подробнее Пользователи Более крупные джекпоты Мы создаем бассейн премии Джекпота через совместную работу всех видеокарт всех наших участников.\",\"Больше пользователей превышают джекпоты Мы создаем призовой джекпот через совместную работу всех видеокарт все наши участников.\"]\n,true]\n,[\"Чтобы выиграть джекпот, вам нужно просто догадаться 4 последних количества случайных биткойновской транзакции, и да, это так простое дата розыгрыша 30.04.2021 Текущий джекпот 110 000 Текущие участники № 1030\",[\"Чтобы выиграть джекпот, вам нужно просто догадаться 4 последних количества случайных биткойновской транзакции, и да, это так простое дата розыгрыша 30.04.2021 Текущий джекпот 110 000 Текущие участники № 1030\",\"Для того, чтобы выиграть джек-пот вам нужно просто угадать 4 последних numders случайной сделки Bitcoin, и да, это так просто Дата розыгрыша 30.04.2021 текущий джекпот 110000 текущие участники номер 1030\"]\n,true]\n]\n]\n]\n,\"ru\",1,\"auto\",[\"What is Guess Hash A free cryptocurrency mining program , thanks to which user can receive unlimited BTC amount from one free lottery ticket . More users bigger Jackpots We are creating a jackpot prize pool through the joint work of all video cards of all our participants . To win the jackpot you need just to guess 4 last numders of a random bitcoin transaction , and yes , it is so simple draw date 30.04.2021 current jackpot 110,000 current participants number 1030\",\"auto\",\"ru\",true]\n]\n,\"en\"]\n",null,null,null,"generic"]
+]
+59
+[["di",194]
+,["af.httprm",193,"-634869799261197867",10]
+]
+27
+[["e",4,null,null,4436]
+]
+`,
 	}
 	for _, it := range input {
-		ret := browser.ParseGoogle5(it)
+		ret, _ := browser.ParseGoogle5(it)
 		fmt.Println(ret)
 		fmt.Println("--------------")
 	}
 	fmt.Println("################################")
 	fmt.Println("################################")
 	for _, it := range input {
-		ret := browser.ParseGoogle5(it)
-		fmt.Println(ret)
+		ret, _ := browser.ParseGoogle5(it)
+		fmt.Println("FinalReusl: ", ret)
 		fmt.Println("--------------")
 	}
 }
