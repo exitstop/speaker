@@ -8,6 +8,7 @@ import (
 
 	"github.com/atotto/clipboard"
 	"github.com/eiannone/keyboard"
+	"github.com/exitstop/speaker/internal/google"
 	"github.com/exitstop/speaker/internal/voice"
 	"github.com/go-vgo/robotgo"
 	hook "github.com/robotn/gohook"
@@ -106,7 +107,7 @@ FOR0:
 	return
 }
 
-func Add(event chan string, voice *voice.VoiceStore) {
+func Add(gstore *google.GStore, voice *voice.VoiceStore) {
 	fmt.Println("--- Please press ctrl + shift + q to stop hook ---")
 	robotgo.EventHook(hook.KeyDown, []string{"q", "ctrl", "shift"}, func(e hook.Event) {
 		fmt.Println("ctrl-shift-q")
@@ -210,15 +211,16 @@ func Add(event chan string, voice *voice.VoiceStore) {
 			}
 			voice.ChanSpeakMe <- processedString
 		} else {
+
 			select {
-			case event <- processedString:
+			case gstore.ChanTranslateMe <- processedString:
 				logrus.WithFields(logrus.Fields{
 					"SendoToGoole": processedString,
 				}).Warn("google")
 			default:
 				logrus.WithFields(logrus.Fields{
 					"SendoToGoole": processedString,
-				}).Error("Drop text")
+				}).Error("Skip text")
 			}
 		}
 	})
