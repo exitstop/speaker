@@ -175,7 +175,7 @@ func Add(event chan string, voice *voice.VoiceStore) {
 	})
 
 	fmt.Println("--- Please press c---")
-	robotgo.EventHook(hook.KeyDown, []string{"c"}, func(e hook.Event) {
+	robotgo.EventHook(hook.KeyDown, []string{"c", "ctrl"}, func(e hook.Event) {
 		if voice.Pause {
 			return
 		}
