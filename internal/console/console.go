@@ -210,10 +210,16 @@ func Add(event chan string, voice *voice.VoiceStore) {
 			}
 			voice.ChanSpeakMe <- processedString
 		} else {
-			logrus.WithFields(logrus.Fields{
-				"SendoToGoole": processedString,
-			}).Warn("google")
-			event <- processedString
+			select {
+			case event <- processedString:
+				logrus.WithFields(logrus.Fields{
+					"SendoToGoole": processedString,
+				}).Warn("google")
+			default:
+				logrus.WithFields(logrus.Fields{
+					"SendoToGoole": processedString,
+				}).Error("Drop text")
+			}
 		}
 	})
 
@@ -235,20 +241,20 @@ func Low() {
 }
 
 func Event() {
-	ok := robotgo.AddEvents("q", "ctrl", "shift")
-	if ok {
-		fmt.Println("add events...")
-	}
+	//ok := robotgo.AddEvents("q", "ctrl", "shift")
+	//if ok {
+	//fmt.Println("add events...")
+	//}
 
-	keve := robotgo.AddEvent("k")
-	if keve {
-		fmt.Println("you press... ", "k")
-	}
+	//keve := robotgo.AddEvent("k")
+	//if keve {
+	//fmt.Println("you press... ", "k")
+	//}
 
-	mleft := robotgo.AddEvent("mleft")
-	if mleft {
-		fmt.Println("you press... ", "mouse left button")
-	}
+	//mleft := robotgo.AddEvent("mleft")
+	//if mleft {
+	//fmt.Println("you press... ", "mouse left button")
+	//}
 }
 
 func RegexWork(tt string) (out string, err error) {
