@@ -6,11 +6,12 @@ import (
 
 	"github.com/exitstop/speaker/internal/browser"
 	"github.com/mxschmitt/playwright-go"
+	"github.com/sirupsen/logrus"
 )
 
 func Create() (gstore GStore) {
-	gstore.TimeoutWaitTranslate = 50 * time.Millisecond
-	gstore.CountLoopWaitTranslate = 40
+	gstore.TimeoutWaitTranslate = 100 * time.Millisecond
+	gstore.CountLoopWaitTranslate = 100
 	gstore.ChanTranslateMe = make(chan string)
 	gstore.Terminatate = make(chan bool)
 
@@ -102,6 +103,13 @@ FOR0:
 
 		if err != nil {
 			err = fmt.Errorf("could no translate text: %v\n", err)
+
+			s.SendTranslateToSpeak <- "не удалось перевести"
+
+			logrus.WithFields(logrus.Fields{
+				"err": err,
+			}).Error("Translate")
+
 			continue
 		} else {
 			//fmt.Println(translateText)
@@ -121,6 +129,9 @@ func (s *GStore) WaitTextTranslate() (parseText string, err error) {
 		}
 		parseText = browser.ParseGoogle5(text)
 		break
+	}
+	if parseText == "" {
+		err = fmt.Errorf("не удалось перевести")
 	}
 	return
 }

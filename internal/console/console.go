@@ -234,9 +234,12 @@ func RegexWork(tt string) (out string, err error) {
 		return
 	}
 	tt = reg0.ReplaceAllString(tt, " ")
-	tt = reg2.ReplaceAllString(tt, "$1. $2")
-	tt = reg3.ReplaceAllString(tt, "$1 $2")
 	tt = reg4.ReplaceAllString(tt, " $1 ")
+	tt = reg3.ReplaceAllString(tt, "$1 $2")
+	tt = reg2.ReplaceAllString(tt, "$1. $2")
+
+	singleSpacePattern := regexp.MustCompile(`\s+`)
+	tt = singleSpacePattern.ReplaceAllString(tt, " ")
 
 	tt = strings.TrimSpace(tt)
 	return tt, err

@@ -983,18 +983,24 @@ func ParseGoogle5(text string) string {
 
 	//fmt.Println("contentArray: ", contentArray[0])
 
-	// возвращамемся назада и ищем [[
+	// возвращамемся назад и ищем [[
 	braketsStart := strings.LastIndex(contentArray[0], "[[") + 2
 	braketsEnd := strings.Index(contentArray[1], "]") + indexRu + 1
 
 	textSplit := strings.Split(text[braketsStart:braketsEnd], `",[\"`)
 
+	//fmt.Println("braketsStart: ", braketsStart)
+	//fmt.Println("braketsEnd : ", braketsEnd)
+	//fmt.Println("textSplit : ", textSplit)
+
 	// Берем из каждой найденной только первые скобки
 	var fullText string
 	for _, it := range textSplit {
-		braketsStart := strings.Index(it, `\"`)
+		braketsStart := strings.Index(it, `"]`)
+		//fmt.Println("braketsStart: ", braketsStart)
+		//fmt.Println("it: ", it)
 		if braketsStart > 0 {
-			fullText += it[0:braketsStart]
+			fullText += it[2 : braketsStart-1]
 		}
 	}
 
