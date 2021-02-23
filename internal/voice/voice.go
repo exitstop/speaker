@@ -20,6 +20,7 @@ type VoiceStore struct {
 	ChanPause   chan bool
 	Pause       bool
 	SpeechSpeed float64
+	NoTranslate bool // не переводить текст
 }
 
 func Create() (v VoiceStore) {
@@ -31,7 +32,7 @@ func Create() (v VoiceStore) {
 	v.Terminatate = make(chan bool)
 	v.ChanPause = make(chan bool)
 
-	v.SpeechSpeed = 3.6
+	v.SpeechSpeed = 3.7
 
 	return v
 }

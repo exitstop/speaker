@@ -131,6 +131,19 @@ func Add(event chan string, voice *voice.VoiceStore) {
 		voice.ChanPause <- !voice.Pause
 	})
 
+	robotgo.EventHook(hook.KeyDown, []string{"t", "alt"}, func(e hook.Event) {
+		fmt.Println("alt-t")
+		//robotgo.EventEnd()
+
+		voice.NoTranslate = !voice.NoTranslate
+
+		if voice.NoTranslate {
+			voice.ChanSpeakMe <- "без перевода"
+		} else {
+			voice.ChanSpeakMe <- "переводить текст"
+		}
+	})
+
 	robotgo.EventHook(hook.KeyDown, []string{"-", "alt"}, func(e hook.Event) {
 		fmt.Println("-", "alt")
 		out, speed, err := voice.SpeedSub()
@@ -191,7 +204,18 @@ func Add(event chan string, voice *voice.VoiceStore) {
 			"SendoToGoole": processedString,
 		}).Warn("google")
 
-		event <- processedString
+		if voice.NoTranslate {
+			processedString, err := RegexWorkRu(text)
+			if err != nil {
+				logrus.WithFields(logrus.Fields{
+					"err": err,
+				}).Warn("regexp")
+				return
+			}
+			voice.ChanSpeakMe <- processedString
+		} else {
+			event <- processedString
+		}
 	})
 
 	robotgo.EventHook(hook.KeyDown, []string{"r", "ctrl", "shift"}, func(e hook.Event) {
@@ -249,6 +273,22 @@ func RegexWork(tt string) (out string, err error) {
 	tt = reg4.ReplaceAllString(tt, " $1 ")
 	tt = reg3.ReplaceAllString(tt, "$1 $2")
 	tt = reg2.ReplaceAllString(tt, "$1. $2")
+
+	singleSpacePattern := regexp.MustCompile(`\s+`)
+	tt = singleSpacePattern.ReplaceAllString(tt, " ")
+	tt = strings.ReplaceAll(tt, " .", ".")
+	tt = strings.ReplaceAll(tt, " ,", ",")
+
+	tt = strings.TrimSpace(tt)
+	return tt, err
+}
+
+func RegexWorkRu(tt string) (out string, err error) {
+	reg0, err := regexp.Compile("[^а-яА-Яa-zA-Z0-9 .,]+")
+	if err != nil {
+		return
+	}
+	tt = reg0.ReplaceAllString(tt, " ")
 
 	singleSpacePattern := regexp.MustCompile(`\s+`)
 	tt = singleSpacePattern.ReplaceAllString(tt, " ")

@@ -86,9 +86,11 @@ FOR0:
 		}
 
 		if s.LastTranslete == s.ToTranslete {
-			s.SendTranslateToSpeak <- s.TranslatedText
-			fmt.Println("REPEATE LAST TRANSLATE")
-			continue
+			if s.TranslatedText != "" {
+				s.SendTranslateToSpeak <- s.TranslatedText
+				fmt.Println("REPEATE LAST TRANSLATE")
+				continue
+			}
 		}
 		s.LastTranslete = s.ToTranslete
 
