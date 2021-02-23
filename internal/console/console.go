@@ -3,8 +3,8 @@ package console
 import (
 	"fmt"
 	"regexp"
+	"strings"
 
-	"github.com/FaceChainTeam/gocommonutil/logger"
 	"github.com/atotto/clipboard"
 	"github.com/eiannone/keyboard"
 	"github.com/exitstop/speaker/internal/voice"
@@ -68,13 +68,13 @@ func Keyboard() (err error) {
 		_ = keyboard.Close()
 	}()
 
-	logger.InitLog("trace", "proxy", "/var/log/facechain/")
+	//logger.InitLog("trace", "proxy", "/var/log/facechain/")
 
-	logrus.SetLevel(logrus.ErrorLevel)
+	//logrus.SetLevel(logrus.ErrorLevel)
 
-	logrus.WithFields(logrus.Fields{
-		"Keyboard": "ok",
-	}).Info("keyboard")
+	//logrus.WithFields(logrus.Fields{
+	//"Keyboard": "ok",
+	//}).Info("keyboard")
 
 FOR0:
 	for {
@@ -119,7 +119,11 @@ func Add(event chan string, voice *voice.VoiceStore) {
 			fmt.Println(err)
 			return
 		}
-		fmt.Println(out)
+
+		logrus.WithFields(logrus.Fields{
+			"out": out,
+		}).Info("speed-")
+
 		voice.ChanSpeakMe <- fmt.Sprintf("%.1f", speed)
 	})
 
@@ -130,19 +134,24 @@ func Add(event chan string, voice *voice.VoiceStore) {
 			fmt.Println(err)
 			return
 		}
-		fmt.Println(out)
+
+		logrus.WithFields(logrus.Fields{
+			"out": out,
+		}).Info("speed+")
+
 		voice.ChanSpeakMe <- fmt.Sprintf("%.1f", speed)
 	})
 
 	fmt.Println("--- Please press c---")
 	robotgo.EventHook(hook.KeyDown, []string{"c"}, func(e hook.Event) {
 		text, _ := clipboard.ReadAll()
-		reg, err := regexp.Compile("[^a-zA-Z0-9 .,]+")
+		processedString, err := RegexWork(text)
 		if err != nil {
-			fmt.Println(err)
+			logrus.WithFields(logrus.Fields{
+				"err": err,
+			}).Warn("regexp")
 			return
 		}
-		processedString := reg.ReplaceAllString(text, " ")
 
 		logrus.WithFields(logrus.Fields{
 			"SendoToGoole": processedString,
@@ -183,4 +192,30 @@ func Event() {
 	if mleft {
 		fmt.Println("you press... ", "mouse left button")
 	}
+}
+
+func RegexWork(tt string) (out string, err error) {
+	reg0, err := regexp.Compile("[^a-zA-Z0-9 .,]+")
+	if err != nil {
+		return
+	}
+	reg2, err := regexp.Compile(`([\p{L}])\.([\p{L}])`)
+	if err != nil {
+		return
+	}
+	reg3, err := regexp.Compile(`([[:lower:]])([[:upper:]])`)
+	if err != nil {
+		return
+	}
+	reg4, err := regexp.Compile(`(\b(\p{L}+)\b)`)
+	if err != nil {
+		return
+	}
+	tt = reg0.ReplaceAllString(tt, " ")
+	tt = reg2.ReplaceAllString(tt, "$1. $2")
+	tt = reg3.ReplaceAllString(tt, "$1 $2")
+	tt = reg4.ReplaceAllString(tt, " $1 ")
+
+	tt = strings.TrimSpace(tt)
+	return tt, err
 }

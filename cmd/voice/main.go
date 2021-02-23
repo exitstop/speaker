@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/FaceChainTeam/gocommonutil/logger"
 	"github.com/exitstop/speaker/internal/console"
 	"github.com/exitstop/speaker/internal/google"
+	"github.com/exitstop/speaker/internal/logger"
 	"github.com/exitstop/speaker/internal/voice"
 	"github.com/sirupsen/logrus"
 )
@@ -21,7 +21,7 @@ func main() {
 	flag.Parse()
 
 	{
-		logger.InitLog("trace", "proxy", "/var/log/facechain/")
+		logger.InitLog("trace", "speaker", "/home/bg/go/src/github.com/exitstop/speaker/logs")
 
 		logrus.SetLevel(logrus.InfoLevel)
 

@@ -37,27 +37,36 @@ func (v *VoiceStore) Start() (err error) {
 	if err != nil {
 		return err
 	}
-	fmt.Println(out)
+
+	logrus.WithFields(logrus.Fields{
+		"out": out,
+	}).Info("get_engine")
 
 	// com.google.android.tts com.acapelagroup.android.tts
 	out, err = v.Requset("set_engine", `{"Text": "com.google.android.tts"}`)
 	if err != nil {
 		return err
 	}
-	fmt.Println(out)
+	logrus.WithFields(logrus.Fields{
+		"out": out,
+	}).Info("set_engine")
 
 	out, err = v.Requset("set_speech_rate", `{"SpeechRate": 3}`)
 	if err != nil {
 		return err
 	}
-	fmt.Println(out)
+	logrus.WithFields(logrus.Fields{
+		"out": out,
+	}).Info("set_speech_rate")
 
 	str := fmt.Sprintf(`{"Text": "Инициализация успешна"}`)
 	out, err = v.Requset("play_on_android", str)
 	if err != nil {
 		return err
 	}
-	fmt.Println(out)
+	logrus.WithFields(logrus.Fields{
+		"out": out,
+	}).Info("play_on_android")
 
 	err = v.SpeekLoop()
 
@@ -99,7 +108,10 @@ FOR0:
 			}).Error("SpeakLoop")
 			continue
 		}
-		fmt.Println(out)
+		logrus.WithFields(logrus.Fields{
+			"out": out,
+		}).Info("play_on_android")
+
 		time.Sleep(time.Second * 1)
 	}
 	return
