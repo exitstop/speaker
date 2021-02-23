@@ -12,6 +12,7 @@
 !*internal/browserlist
 !*internal/browser
 !*internal/console
+!*internal/logger
 !*internal/voice
 !*cmd
 !*cmd/speaker
