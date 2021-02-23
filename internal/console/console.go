@@ -10,7 +10,7 @@ import (
 	"github.com/eiannone/keyboard"
 	"github.com/exitstop/speaker/internal/google"
 	"github.com/exitstop/speaker/internal/voice"
-	"github.com/go-vgo/robotgo"
+	"github.com/exitstop/robotgo"
 	hook "github.com/robotn/gohook"
 	"github.com/sirupsen/logrus"
 )
