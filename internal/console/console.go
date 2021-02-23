@@ -119,6 +119,18 @@ func Add(event chan string, voice *voice.VoiceStore) {
 		voice.Terminatate <- true
 	})
 
+	robotgo.EventHook(hook.KeyDown, []string{"p", "ctrl", "shift"}, func(e hook.Event) {
+		fmt.Println("ctrl-shift-p")
+		//robotgo.EventEnd()
+
+		if !voice.Pause {
+			voice.ChanSpeakMe <- "пауза"
+		}
+
+		time.Sleep(time.Millisecond * 1)
+		voice.ChanPause <- !voice.Pause
+	})
+
 	robotgo.EventHook(hook.KeyDown, []string{"-", "alt"}, func(e hook.Event) {
 		fmt.Println("-", "alt")
 		out, speed, err := voice.SpeedSub()
@@ -151,6 +163,9 @@ func Add(event chan string, voice *voice.VoiceStore) {
 
 	fmt.Println("--- Please press c---")
 	robotgo.EventHook(hook.KeyDown, []string{"c"}, func(e hook.Event) {
+		if voice.Pause {
+			return
+		}
 		text, _ := clipboard.ReadAll()
 		processedString, err := RegexWork(text)
 		if err != nil {

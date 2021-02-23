@@ -17,6 +17,8 @@ type VoiceStore struct {
 	Client      *http.Client
 	ChanSpeakMe chan string
 	Terminatate chan bool
+	ChanPause   chan bool
+	Pause       bool
 	SpeechSpeed float64
 }
 
@@ -27,6 +29,8 @@ func Create() (v VoiceStore) {
 
 	v.ChanSpeakMe = make(chan string)
 	v.Terminatate = make(chan bool)
+	v.ChanPause = make(chan bool)
+
 	v.SpeechSpeed = 3.6
 
 	return v
@@ -98,6 +102,9 @@ FOR0:
 		case v.SpeakMe = <-v.ChanSpeakMe:
 		case <-v.Terminatate:
 			break FOR0
+		case v.Pause = <-v.ChanPause:
+			v.Pause = <-v.ChanPause
+			v.SpeakMe = "пауза снята"
 		}
 
 		str := fmt.Sprintf(`{"Text": "%s"}`, v.SpeakMe)
