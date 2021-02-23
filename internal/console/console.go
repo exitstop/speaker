@@ -119,8 +119,8 @@ func Add(event chan string, voice *voice.VoiceStore) {
 		voice.Terminatate <- true
 	})
 
-	robotgo.EventHook(hook.KeyDown, []string{"p", "ctrl", "shift"}, func(e hook.Event) {
-		fmt.Println("ctrl-shift-p")
+	robotgo.EventHook(hook.KeyDown, []string{"p", "ctlr", "alt"}, func(e hook.Event) {
+		fmt.Println("ctrl-alt-p")
 		//robotgo.EventEnd()
 
 		if !voice.Pause {
