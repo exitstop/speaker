@@ -102,11 +102,11 @@ FOR0:
 		s.TranslatedText, err = s.WaitTextTranslate()
 
 		if err != nil {
-			err = fmt.Errorf("could no translate text: %v\n", err)
+			err = fmt.Errorf("не удалось перевести: %s", err.Error())
 
 			//s.SendTranslateToSpeak <- "не удалось перевести"
+			//strErr := fmt.Sprintf("не удалось перевести: %s", err.Error())
 			s.SendTranslateToSpeak <- err.Error()
-
 			logrus.WithFields(logrus.Fields{
 				"err": err,
 			}).Error("Translate")
@@ -122,17 +122,22 @@ FOR0:
 
 // Ждем пока появится перевод
 func (s *GStore) WaitTextTranslate() (parseText string, err error) {
+	var text string
 	for i := 0; i < s.CountLoopWaitTranslate; i++ {
-		text, err := s.GetTextGoogle()
+		text, err = s.GetTextGoogle()
 		if err != nil {
 			time.Sleep(s.TimeoutWaitTranslate)
 			continue
 		}
 		parseText, err = browser.ParseGoogle5(text)
+		if err != nil {
+			err = fmt.Errorf("перевод не распарсился")
+			return parseText, err
+		}
 		break
 	}
 	if parseText == "" {
-		err = fmt.Errorf("не удалось перевести")
+		err = fmt.Errorf("пустая строка")
 	}
 	return
 }
@@ -147,7 +152,7 @@ func (s *GStore) GetTextGoogle() (text string, err error) {
 
 	text = handle.String()
 	if text == "" || text == "JSHandle@" {
-		err = fmt.Errorf("empty text: %v\n")
+		err = fmt.Errorf("empty text: \n")
 		return
 	}
 

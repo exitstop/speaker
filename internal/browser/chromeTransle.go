@@ -563,7 +563,7 @@ func PasreGoogle(text string) string {
 			}
 		}
 	}
-	countBrackets = countBrackets
+	//countBrackets = countBrackets
 	for i := 0; i < LEN_ARR; i++ {
 		c := in[i]
 		if c == '[' {
@@ -987,7 +987,7 @@ func ParseGoogle5(text string) (fullText string, err error) {
 
 	// возвращамемся назад и ищем [[
 	braketsStart := strings.LastIndex(contentArray[0], "[[") + 4
-	braketsEnd := strings.Index(contentArray[1], "]") + indexRu - 14
+	braketsEnd := strings.Index(contentArray[1], "]") + indexRu + 1
 
 	textSplit := strings.Split(text[braketsStart:braketsEnd], `",[\"`)
 

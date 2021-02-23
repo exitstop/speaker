@@ -3,8 +3,6 @@ package browser
 import (
 	"fmt"
 	"testing"
-
-	"github.com/exitstop/speaker/internal/browser"
 )
 
 // go test internal/browser/chrome_test.go -run TestBrowser
@@ -54,7 +52,7 @@ func TestBrowser(t *testing.T) {
 	//}
 
 	for _, it := range input {
-		ret := browser.ParseGoogle4(it)
+		ret := ParseGoogle4(it)
 		fmt.Println(ret)
 		fmt.Println("--------------")
 	}
