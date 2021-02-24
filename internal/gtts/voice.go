@@ -43,6 +43,8 @@ func (v *VoiceStore) Start() (err error) {
 		"requirement": "sudo -H pip3 install gTTS; sudo apt install -y mpg123",
 	}).Info("gtts")
 
+	v.SpeakMe = "инициализация успешна"
+	v.Say()
 	v.SpeekLoop()
 
 	return
