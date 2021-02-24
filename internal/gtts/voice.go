@@ -1,10 +1,11 @@
-package voice
+package gtts
 
 import (
 	"bytes"
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"os/exec"
 	"time"
 
 	"github.com/sirupsen/logrus"
@@ -32,66 +33,29 @@ func Create() (v VoiceStore) {
 	v.Terminatate = make(chan bool)
 	v.ChanPause = make(chan bool)
 
-	v.SpeechSpeed = 3.7
+	v.SpeechSpeed = 3
 
 	return v
 }
 
 func (v *VoiceStore) Start() (err error) {
-	out, err := v.Requset("get_engine", `{"Text": ""}`)
-	if err != nil {
-		return err
-	}
-
 	logrus.WithFields(logrus.Fields{
-		"out": out,
-	}).Info("get_engine")
+		"requirement": "sudo -H pip3 install gTTS; sudo apt install -y mpg123",
+	}).Info("gtts")
 
-	// com.google.android.tts com.acapelagroup.android.tts
-	out, err = v.Requset("set_engine", `{"Text": "com.google.android.tts"}`)
-	if err != nil {
-		return err
-	}
-	logrus.WithFields(logrus.Fields{
-		"out": out,
-	}).Info("set_engine")
-
-	out, err = v.Requset("set_speech_rate", `{"SpeechRate": 3}`)
-	if err != nil {
-		return err
-	}
-	logrus.WithFields(logrus.Fields{
-		"out": out,
-	}).Info("set_speech_rate")
-
-	str := fmt.Sprintf(`{"Text": "Инициализация успешна"}`)
-	out, err = v.Requset("play_on_android", str)
-	if err != nil {
-		return err
-	}
-	logrus.WithFields(logrus.Fields{
-		"out": out,
-	}).Info("play_on_android")
-
-	err = v.SpeekLoop()
+	v.SpeekLoop()
 
 	return
 }
 
 func (v *VoiceStore) SpeedSub() (out string, speed float64, err error) {
-	v.SpeechSpeed -= 0.1
-	strSpeed := fmt.Sprintf(`{"SpeechRate": %.2f}`, v.SpeechSpeed)
-	out, err = v.Requset("set_speech_rate", strSpeed)
-	out = fmt.Sprintf("%s %.1f", out, v.SpeechSpeed)
+	v.SpeechSpeed -= 1
 	speed = v.SpeechSpeed
 	return
 }
 
 func (v *VoiceStore) SpeedAdd() (out string, speed float64, err error) {
-	v.SpeechSpeed += 0.1
-	strSpeed := fmt.Sprintf(`{"SpeechRate": %.2f}`, v.SpeechSpeed)
-	out, err = v.Requset("set_speech_rate", strSpeed)
-	out = fmt.Sprintf("%s %.1f", out, v.SpeechSpeed)
+	v.SpeechSpeed += 1
 	speed = v.SpeechSpeed
 	return
 }
@@ -108,7 +72,11 @@ FOR0:
 			v.SpeakMe = "пауза снята"
 		}
 
-		err = v.Say()
+		logrus.WithFields(logrus.Fields{
+			"out": v.SpeakMe,
+		}).Info("Say")
+
+		err := v.Say()
 
 		if err != nil {
 			logrus.WithFields(logrus.Fields{
@@ -144,12 +112,9 @@ func (v *VoiceStore) Requset(method, input string) (out string, err error) {
 }
 
 func (v *VoiceStore) Say() (err error) {
-	str := fmt.Sprintf(`{"Text": "%s"}`, v.SpeakMe)
-	out, err := v.Requset("play_on_android", str)
-
-	logrus.WithFields(logrus.Fields{
-		"out": out,
-	}).Info("play_on_android")
+	strCommand := fmt.Sprintf(`gtts-cli -l ru "%s" | mpg123 -d %d --pitch 0 -`, v.SpeakMe, int(v.SpeechSpeed))
+	cmdCurl := exec.Command("/bin/bash", "-c", strCommand)
+	err = cmdCurl.Run()
 	return
 }
 

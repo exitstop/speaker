@@ -8,9 +8,9 @@ import (
 
 	"github.com/atotto/clipboard"
 	"github.com/eiannone/keyboard"
-	"github.com/exitstop/speaker/internal/google"
-	"github.com/exitstop/speaker/internal/voice"
 	"github.com/exitstop/robotgo"
+	"github.com/exitstop/speaker/internal/basic"
+	"github.com/exitstop/speaker/internal/google"
 	hook "github.com/robotn/gohook"
 	"github.com/sirupsen/logrus"
 )
@@ -107,41 +107,49 @@ FOR0:
 	return
 }
 
-func Add(gstore *google.GStore, voice *voice.VoiceStore) {
+//func Add(gstore *google.GStore, voice *voice.VoiceStore) {
+func Add(gstore *google.GStore, voice basic.VoiceInterface) {
 	fmt.Println("--- Please press ctrl + shift + q to stop hook ---")
 	robotgo.EventHook(hook.KeyDown, []string{"q", "ctrl", "shift"}, func(e hook.Event) {
 		fmt.Println("ctrl-shift-q")
 		//robotgo.EventEnd()
 
-		voice.ChanSpeakMe <- "завершение программы"
+		voice.ChSpeakMe("завершение программы")
+
 		time.Sleep(1 * time.Second)
 
-		voice.Terminatate <- true
-		voice.Terminatate <- true
+		//voice.Terminatate <- true
+		//voice.Terminatate <- true
+		voice.Exit()
+		voice.Exit()
 	})
 
 	robotgo.EventHook(hook.KeyDown, []string{"p", "ctlr", "alt"}, func(e hook.Event) {
 		fmt.Println("ctrl-alt-p")
 		//robotgo.EventEnd()
 
-		if !voice.Pause {
-			voice.ChanSpeakMe <- "пауза"
+		if !voice.GetPause() {
+			//voice.ChanSpeakMe <- "пауза"
+			voice.ChSpeakMe("пауза")
 		}
 
 		time.Sleep(time.Millisecond * 1)
-		voice.ChanPause <- !voice.Pause
+		//voice.ChanPause <- !voice.Pause
+		voice.SetPause()
 	})
 
 	robotgo.EventHook(hook.KeyDown, []string{"t", "alt"}, func(e hook.Event) {
 		fmt.Println("alt-t")
 		//robotgo.EventEnd()
 
-		voice.NoTranslate = !voice.NoTranslate
+		//voice.NoTranslate = !voice.NoTranslate
 
-		if voice.NoTranslate {
-			voice.ChanSpeakMe <- "без перевода"
+		if voice.TanslateOrNot() {
+			//voice.ChanSpeakMe <-
+			voice.ChSpeakMe("без перевода")
 		} else {
-			voice.ChanSpeakMe <- "переводить текст"
+			//voice.ChanSpeakMe <- "переводить текст"
+			voice.ChSpeakMe("переводить текст")
 		}
 	})
 
@@ -157,7 +165,9 @@ func Add(gstore *google.GStore, voice *voice.VoiceStore) {
 			"out": out,
 		}).Info("speed-")
 
-		voice.ChanSpeakMe <- fmt.Sprintf("%.1f", speed)
+		//voice.ChanSpeakMe <- fmt.Sprintf("%.1f", speed)
+		str := fmt.Sprintf("%.1f", speed)
+		voice.ChSpeakMe(str)
 	})
 
 	robotgo.EventHook(hook.KeyDown, []string{"+", "alt"}, func(e hook.Event) {
@@ -172,14 +182,18 @@ func Add(gstore *google.GStore, voice *voice.VoiceStore) {
 			"out": out,
 		}).Info("speed+")
 
-		voice.ChanSpeakMe <- fmt.Sprintf("%.1f", speed)
+		//voice.ChanSpeakMe <- fmt.Sprintf("%.1f", speed)
+		str := fmt.Sprintf("%.1f", speed)
+		voice.ChSpeakMe(str)
 	})
 
 	fmt.Println("--- Please press c---")
 	robotgo.EventHook(hook.KeyDown, []string{"c", "ctrl"}, func(e hook.Event) {
-		if voice.Pause {
+		//if voice.Pause {
+		if voice.GetPause() {
 			return
 		}
+
 		time.Sleep(time.Millisecond * 50)
 		text, err := clipboard.ReadAll()
 
@@ -188,7 +202,8 @@ func Add(gstore *google.GStore, voice *voice.VoiceStore) {
 				"err": err,
 			}).Warn("clipboard")
 
-			voice.ChanSpeakMe <- fmt.Sprintf("не скопировалось")
+			//voice.ChanSpeakMe <- fmt.Sprintf()
+			voice.ChSpeakMe("не скопировалось")
 			return
 		}
 
@@ -201,7 +216,8 @@ func Add(gstore *google.GStore, voice *voice.VoiceStore) {
 			return
 		}
 
-		if voice.NoTranslate {
+		//if voice.NoTranslate {
+		if voice.TanslateOrNot() {
 			processedString, err := RegexWorkRu(text)
 			if err != nil {
 				logrus.WithFields(logrus.Fields{
@@ -209,7 +225,8 @@ func Add(gstore *google.GStore, voice *voice.VoiceStore) {
 				}).Warn("regexp")
 				return
 			}
-			voice.ChanSpeakMe <- processedString
+			//voice.ChanSpeakMe <- processedString
+			voice.ChSpeakMe(processedString)
 		} else {
 
 			select {

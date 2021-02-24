@@ -5,23 +5,25 @@
 # find . -type d | cut -c 3- | sed 's/^/!*/' | grep -v ".git"
 # Затем
 # Разрешаем мониторить эти папки
-!*configs
 !*examples
 !*internal
 !*internal/google
-!*internal/browserlist
-!*internal/browser
+!*internal/voice
 !*internal/console
 !*internal/logger
-!*internal/voice
-!*cmd
-!*cmd/speaker
-!*cmd/voice
-!*cmd/chrome
-!*scripts
-!*scripts/elementYandex
+!*internal/gtts
+!*internal/basic
+!*internal/browserlist
+!*internal/browser
 !*docker
 !*docker/cross
+!*cmd
+!*cmd/android
+!*cmd/speaker
+!*cmd/chrome
+!*cmd/gtts
+!*scripts
+!*scripts/elementYandex
 
 # И в этих папках брать только эти форматы
 !*.ini

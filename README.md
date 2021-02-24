@@ -18,7 +18,11 @@ sudo apt-get install -y libx11-dev libxtst-dev libxt-dev libxinerama-dev libx11-
 # Как запустить
 
 ```bash
-go run cmd/voice/main.go -ip 192.168.0.133 -t
+# берет голос gtts
+go run cmd/gtts/main.go -ip 192.168.0.133 -t
+
+# берет голос из android приложения sudo -H pip3 install gTTS; sudo apt install -y mpg123
+go run cmd/android/main.go -ip 192.168.0.133 -t
 ```
 
 # Копиляция под windows
@@ -35,6 +39,31 @@ make windows
 - `alt+t` читать текст но не переводить(вкл/выкл)
 - `ctrl+alt+p` pause/resume.
 - `ctr+shift+q` завершить приложение
+
+# Бесплатные голоса для ubuntu
+
+```bash
+sudo apt-get install gnustep-gui-runtime
+say "hello"
+
+sudo apt-get install festival
+echo "hello" | festival --tts
+
+sudo apt-get install speech-dispatcher
+spd-say "hello"
+
+sudo apt-get install espeak
+espeak "hello"
+
+sudo -H pip3 install gTTS
+(Google Text to Speech / github.com/pndurette/gTTS )
+gtts-cli -h
+gtts-cli -l ru "привет мир" | mpg123 -
+gtts-cli -l ru "Бесплатный сервис Google позволяет мгновенно переводить слова, фразы и веб-страницы с английского более чем на 100 языков и обратно." | mpg123 -d 3 --pitch 0 -
+# https://linux.die.net/man/1/mpg123
+ 
+
+```
 
 # find only dir
 
