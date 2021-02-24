@@ -65,6 +65,7 @@ spd-say "hello"
 sudo apt-get install espeak
 espeak "hello"
 
+# https://gtts.readthedocs.io/en/latest/
 sudo -H pip3 install gTTS
 (Google Text to Speech / github.com/pndurette/gTTS )
 gtts-cli -h
