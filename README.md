@@ -45,7 +45,7 @@ go run cmd/gtts/main.go -t
 go run cmd/android/main.go -ip 192.168.0.133 -t
 ```
 
-# Копиляция под windows
+# Компиляция под windows
 
 ```bash
 make docker_prebuild_image
