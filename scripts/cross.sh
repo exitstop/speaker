@@ -9,7 +9,7 @@ docker run --rm -v "$GOPATH":/go -w /go/src/github.com/exitstop/speaker exitstop
 export PATH="$PATH:/usr/include/:/mingw64/include:/mingw64/bin"
 export LIBRARY_PATH=$LIBRARY_PATH:/usr/lib/:/mingw64/lib/
 set -ex
-GOOS=windows GOOARCH=amd64 CC=x86_64-w64-mingw32-gcc CGO_ENABLED=1 go build -v -o build/speaker.exe cmd/voice/main.go
+GOOS=windows GOOARCH=amd64 CC=x86_64-w64-mingw32-gcc CGO_ENABLED=1 go build -v -o build/speaker.exe cmd/gtts/main.go
 set -e
 '
 
