@@ -1,5 +1,12 @@
 # speaker
 
+# Самый простой способ запустить
+
+```bash
+sudo -H pip3 install gTTS; sudo apt install -y mpg123
+go run cmd/gtts/main.go -ip 192.168.0.133 -t
+```
+
 Переводит текст при нажатии ctr+c, и читает его в слух с помощью приложение для android использую tts установленные там.
 
 - Перед использованием нужно получить приложение для android https://github.com/exitstop/speakerandroid
@@ -18,10 +25,13 @@ sudo apt-get install -y libx11-dev libxtst-dev libxt-dev libxinerama-dev libx11-
 # Как запустить
 
 ```bash
+Вариант 1.
 # берет голос gtts
+sudo -H pip3 install gTTS; sudo apt install -y mpg123
 go run cmd/gtts/main.go -ip 192.168.0.133 -t
 
-# берет голос из android приложения sudo -H pip3 install gTTS; sudo apt install -y mpg123
+Вариант 2.
+# берет голос из android приложения 
 go run cmd/android/main.go -ip 192.168.0.133 -t
 ```
 
