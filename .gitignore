@@ -20,6 +20,8 @@
 !*cmd/chrome
 !*scripts
 !*scripts/elementYandex
+!*docker
+!*docker/cross
 
 # И в этих папках брать только эти форматы
 !*.ini
@@ -46,6 +48,7 @@
 !*.pth
 !*.so
 !*.crx
+!Dockerfile
 # Использутей для этих типв файлов git lfs
 #!*.png
 
