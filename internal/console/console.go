@@ -70,14 +70,6 @@ func Keyboard() (err error) {
 		_ = keyboard.Close()
 	}()
 
-	//logger.InitLog("trace", "proxy", "/var/log/facechain/")
-
-	//logrus.SetLevel(logrus.ErrorLevel)
-
-	//logrus.WithFields(logrus.Fields{
-	//"Keyboard": "ok",
-	//}).Info("keyboard")
-
 FOR0:
 	for {
 		char, key, err := keyboard.GetKey()
@@ -107,48 +99,38 @@ FOR0:
 	return
 }
 
-//func Add(gstore *google.GStore, voice *voice.VoiceStore) {
 func Add(gstore *google.GStore, voice basic.VoiceInterface) {
 	fmt.Println("--- Please press ctrl + shift + q to stop hook ---")
 	robotgo.EventHook(hook.KeyDown, []string{"q", "ctrl", "shift"}, func(e hook.Event) {
 		fmt.Println("ctrl-shift-q")
-		//robotgo.EventEnd()
 
 		voice.ChSpeakMe("завершение программы")
 
 		time.Sleep(1 * time.Second)
 
-		//voice.Terminatate <- true
-		//voice.Terminatate <- true
 		voice.Exit()
 		voice.Exit()
 	})
 
 	robotgo.EventHook(hook.KeyDown, []string{"p", "ctlr", "alt"}, func(e hook.Event) {
 		fmt.Println("ctrl-alt-p")
-		//robotgo.EventEnd()
 
 		if !voice.GetPause() {
-			//voice.ChanSpeakMe <- "пауза"
 			voice.ChSpeakMe("пауза")
 		}
 
 		time.Sleep(time.Millisecond * 1)
-		//voice.ChanPause <- !voice.Pause
 		voice.SetPause()
 	})
 
 	robotgo.EventHook(hook.KeyDown, []string{"t", "alt"}, func(e hook.Event) {
 		fmt.Println("alt-t")
-		//robotgo.EventEnd()
 
-		//voice.NoTranslate = !voice.NoTranslate
+		voice.InvertTranslate()
 
 		if voice.TanslateOrNot() {
-			//voice.ChanSpeakMe <-
 			voice.ChSpeakMe("без перевода")
 		} else {
-			//voice.ChanSpeakMe <- "переводить текст"
 			voice.ChSpeakMe("переводить текст")
 		}
 	})
@@ -165,7 +147,6 @@ func Add(gstore *google.GStore, voice basic.VoiceInterface) {
 			"out": out,
 		}).Info("speed-")
 
-		//voice.ChanSpeakMe <- fmt.Sprintf("%.1f", speed)
 		str := fmt.Sprintf("%.1f", speed)
 		voice.ChSpeakMe(str)
 	})
@@ -182,14 +163,12 @@ func Add(gstore *google.GStore, voice basic.VoiceInterface) {
 			"out": out,
 		}).Info("speed+")
 
-		//voice.ChanSpeakMe <- fmt.Sprintf("%.1f", speed)
 		str := fmt.Sprintf("%.1f", speed)
 		voice.ChSpeakMe(str)
 	})
 
 	fmt.Println("--- Please press c---")
 	robotgo.EventHook(hook.KeyDown, []string{"c", "ctrl"}, func(e hook.Event) {
-		//if voice.Pause {
 		if voice.GetPause() {
 			return
 		}
@@ -202,7 +181,6 @@ func Add(gstore *google.GStore, voice basic.VoiceInterface) {
 				"err": err,
 			}).Warn("clipboard")
 
-			//voice.ChanSpeakMe <- fmt.Sprintf()
 			voice.ChSpeakMe("не скопировалось")
 			return
 		}
@@ -216,7 +194,6 @@ func Add(gstore *google.GStore, voice basic.VoiceInterface) {
 			return
 		}
 
-		//if voice.NoTranslate {
 		if voice.TanslateOrNot() {
 			processedString, err := RegexWorkRu(text)
 			if err != nil {
@@ -225,7 +202,6 @@ func Add(gstore *google.GStore, voice basic.VoiceInterface) {
 				}).Warn("regexp")
 				return
 			}
-			//voice.ChanSpeakMe <- processedString
 			voice.ChSpeakMe(processedString)
 		} else {
 
@@ -260,20 +236,6 @@ func Low() {
 }
 
 func Event() {
-	//ok := robotgo.AddEvents("q", "ctrl", "shift")
-	//if ok {
-	//fmt.Println("add events...")
-	//}
-
-	//keve := robotgo.AddEvent("k")
-	//if keve {
-	//fmt.Println("you press... ", "k")
-	//}
-
-	//mleft := robotgo.AddEvent("mleft")
-	//if mleft {
-	//fmt.Println("you press... ", "mouse left button")
-	//}
 }
 
 func RegexWork(tt string) (out string, err error) {
