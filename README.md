@@ -22,7 +22,7 @@ go run cmd/gtts/main.go -t
 - Перед использованием нужно получить приложение для android https://github.com/exitstop/speakerandroid
 - Скомпилировать и установить на android
 
-# Как работает переводичк
+# Как работает переводчик
 
 Перевод происходит через https://translate.google.ru с помощью https://github.com/mxschmitt/playwright-go, запуская браузер в headless режиме
 
