@@ -13,10 +13,8 @@ import (
 )
 
 func main() {
-	var nFlag string
 	var nFlagTransel bool
 
-	flag.StringVar(&nFlag, "ip", "192.168.0.133", "ip")
 	flag.BoolVar(&nFlagTransel, "t", false, "translate")
 	flag.Parse()
 
@@ -40,7 +38,6 @@ func main() {
 
 	// voice google tts
 	v := gtts.Create()
-	v.IP = nFlag + ":8484"
 
 	gstore.Terminatate = v.Terminatate
 

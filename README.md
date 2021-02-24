@@ -4,7 +4,7 @@
 
 ```bash
 sudo -H pip3 install gTTS; sudo apt install -y mpg123
-go run cmd/gtts/main.go -ip 192.168.0.133 -t
+go run cmd/gtts/main.go -t
 ```
 
 Переводит текст при нажатии ctr+c, и читает его в слух с помощью приложение для android использую tts установленные там.
@@ -28,7 +28,7 @@ sudo apt-get install -y libx11-dev libxtst-dev libxt-dev libxinerama-dev libx11-
 Вариант 1.
 # берет голос gtts
 sudo -H pip3 install gTTS; sudo apt install -y mpg123
-go run cmd/gtts/main.go -ip 192.168.0.133 -t
+go run cmd/gtts/main.go -t
 
 Вариант 2.
 # берет голос из android приложения 
