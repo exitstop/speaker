@@ -29,6 +29,13 @@ make windows
 # -> build/speaker.exe
 ```
 
+# Глобальные горячие клавиши
+
+- `ctrl+c` перевести и прочитать текст
+- `alt+t` читать текст но не переводить(вкл/выкл)
+- `ctrl+alt+p` pause/resume.
+- `ctr+shift+q` завершить приложение
+
 # find only dir
 
 ```bash
