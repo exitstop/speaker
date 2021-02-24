@@ -1,5 +1,13 @@
 # speaker
 
+# Как установить Golang
+
+```bash
+GOVERSION="1.16"
+wget -P /tmp -q https://dl.google.com/go/go$GOVERSION.linux-amd64.tar.gz
+sudo tar -C /usr/local -xzf /tmp/go$GOVERSION.linux-amd64.tar.gz
+```
+
 # Самый простой способ запустить
 
 ```bash
@@ -7,7 +15,9 @@ sudo -H pip3 install gTTS; sudo apt install -y mpg123
 go run cmd/gtts/main.go -t
 ```
 
-Переводит текст при нажатии ctr+c, и читает его в слух с помощью приложение для android использую tts установленные там.
+# Описание
+
+`cmd/android/main.go` Переводит текст при нажатии ctr+c, и читает его в слух с помощью приложение для android использую tts установленные там.
 
 - Перед использованием нужно получить приложение для android https://github.com/exitstop/speakerandroid
 - Скомпилировать и установить на android
