@@ -8,6 +8,7 @@ wget -P /tmp -q https://dl.google.com/go/go$GOVERSION.linux-amd64.tar.gz
 sudo tar -C /usr/local -xzf /tmp/go$GOVERSION.linux-amd64.tar.gz
 ```
 
+# Вариант использующий голос gTTS, не требующий голосового движка
 # Самый простой способ запустить
 
 ```bash
@@ -15,7 +16,8 @@ sudo -H pip3 install gTTS; sudo apt install -y mpg123
 go run cmd/gtts/main.go -t
 ```
 
-# Описание
+# Вариант с отдельным приложение на android
+## Описание
 
 `cmd/android/main.go` Переводит текст при нажатии ctr+c, и читает его в слух с помощью приложение для android использую tts установленные там.
 
