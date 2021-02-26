@@ -3,6 +3,7 @@
 # Как установить Golang
 
 ```bash
+# нужно удалить старый sudo rm -rf /usr/local/go чтобы не было проблем с новым
 GOVERSION="1.16"
 wget -P /tmp -q https://dl.google.com/go/go$GOVERSION.linux-amd64.tar.gz
 sudo tar -C /usr/local -xzf /tmp/go$GOVERSION.linux-amd64.tar.gz
