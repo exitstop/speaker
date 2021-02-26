@@ -51,6 +51,7 @@
 !*.so
 !*.crx
 !Dockerfile
+!Makefile
 # Использутей для этих типв файлов git lfs
 #!*.png
 

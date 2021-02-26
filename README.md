@@ -105,3 +105,19 @@ export GOPROXY=direct
 export GOSUMDB=off
 source ~/.zshrc
 ```
+
+# Аналоги
+
+- https://github.com/soimort/translate-shell
+
+```bash
+git clone https://github.com/soimort/translate-shell
+cd translate-shell
+sudo apt install -y gawk
+make
+sudo make install
+trans en:ru -brief 'Hello world' -p 
+
+# https://github.com/soimort/translate-shell/wiki/Narrator-Selection
+trans -e yandex "Ничего, были бы кости, а мясо будет" -sp -n jane,evil
+```
