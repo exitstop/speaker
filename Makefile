@@ -8,3 +8,6 @@ docker_prebuild_image:
 windows:
 	#GOOS=windows GOARCH=amd64 CGO_ENABLED=1 $(GOBUILD) -v -o build/speaker.exe cmd/voice/main.go
 	./scripts/cross.sh
+
+android:
+	go run cmd/android/main.go -ip 192.168.0.133
